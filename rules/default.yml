@@ -1,0 +1,27 @@
+# Event Orchestration Rules
+# TODO: Step 4 でルールを定義
+
+rules:
+  - name: "notification"
+    description: "通知系イベントをSlackに転送"
+    match:
+      type: "notification.*"
+    actions:
+      - type: "slack_notify"
+        channel: "default"
+
+  - name: "alert"
+    description: "アラート系イベントを即時通知"
+    match:
+      type: "alert.*"
+    actions:
+      - type: "slack_notify"
+        channel: "alerts"
+        priority: "high"
+
+  - name: "default"
+    description: "マッチしないイベントのデフォルト処理"
+    match:
+      type: "*"
+    actions:
+      - type: "log_only"
