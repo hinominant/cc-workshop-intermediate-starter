@@ -1,0 +1,52 @@
+{
+  "$schema": "https://code.claude.com/settings.schema.json",
+
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npx vitest:*)"
+    ],
+    "ask": [
+      "Write",
+      "Edit",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run audit:*)"
+    ],
+    "deny": [
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push:*)",
+      "Bash(git push)",
+      "Bash(git remote set-url:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git push --force:*)",
+      "Bash(git clean -f:*)",
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.secrets/**)",
+      "Read(credentials/**)",
+      "Write(.env)",
+      "Write(.env.local)",
+      "Write(.secrets/**)",
+      "Write(credentials/**)",
+      "Edit(.env)",
+      "Edit(.env.local)",
+      "Edit(.secrets/**)",
+      "Edit(credentials/**)",
+      "WebFetch"
+    ]
+  }
+}

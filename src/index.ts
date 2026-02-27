@@ -1,6 +1,9 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-// TODO: Step 3 で import を追加
+// TODO: Step 3 で以下の import を追加
+// import { verifySignature, isTimestampValid } from "./security/signature.js";
+// import { parseWebhookEvent } from "./adapters/webhook-provider.js";
+// import { notifySlack } from "./adapters/slack-notifier.js";
 
 const app = new Hono();
 
