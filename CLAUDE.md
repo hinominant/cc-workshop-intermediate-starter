@@ -223,3 +223,20 @@ Sherpa で計画 → Artisan で実装 → Radar でテスト
 - Secrets をコード・チャット・ログに含めない（L4 即時停止）
 - DCP に従い、操作のリスクを常に意識する
 - 日本語で出力
+
+## Agent Team Framework
+
+This project uses [Agent Orchestrator](https://github.com/luna-matching/agent-orchestrator).
+Agent definitions are in `.claude/agents/`. Framework protocol is in `.claude/agents/_framework.md`.
+
+### Key Rules
+- Hub-spoke pattern: all communication through orchestrator (Nexus/Rally)
+- CEO handles business decisions before technical execution
+- File ownership is law in parallel execution
+- Guardrails L1-L4 for safe autonomous execution
+- All outputs in Japanese
+- Conventional Commits, no agent names in commits/PRs
+
+### Business Context
+- `.agents/LUNA_CONTEXT.md` - Business context for CEO decisions
+- `.agents/PROJECT.md` - Shared knowledge across agents
