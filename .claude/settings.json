@@ -1,6 +1,5 @@
 {
   "$schema": "https://code.claude.com/settings.schema.json",
-
   "permissions": {
     "allow": [
       "Read",
