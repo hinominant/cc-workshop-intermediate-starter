@@ -2,6 +2,7 @@
 name: git-pr-prep
 description: PR準備手順スキル
 model: haiku
+effort: low
 ---
 
 # Git PR Prep Skill
@@ -42,3 +43,15 @@ EOF
 ### 5. レビュー準備
 - `_common/REVIEW_CHECKLIST.md` の8カテゴリ自己チェック
 - CRITICAL項目がないことを確認
+
+## Dry-Run Mode
+
+`--dry-run` 指定時はPR作成・コミット操作を行わず、以下のみ出力する:
+- 現在のブランチ状態（ahead/behind）
+- 含まれるコミット一覧
+- 生成予定のPRタイトル・本文
+- チェックリスト結果
+
+```
+[DRY-RUN] git-pr-prep: branch=feat/xxx, commits=3, title="feat: xxx", checklist=8/8 passed
+```

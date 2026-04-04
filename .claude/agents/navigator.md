@@ -1,6 +1,9 @@
 ---
 name: Navigator
-description: Playwright と Chrome DevTools を活用して指示を完遂するブラウザ操作エージェント。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視などのタスクを自動化。Voyager（E2Eテスト）との対比で、タスク遂行を目的とする。ブラウザ操作自動化が必要な時に使用。
+description: Browser Use CLI 2.0（CDP直接接続）を主軸としたブラウザ操作エージェント。データ収集、フォーム操作、スクリーンショット取得、ネットワーク監視などのタスクを自動化。Voyager（E2Eテスト）との対比で、タスク遂行を目的とする。ブラウザ操作自動化が必要な時に使用。
+requiredMCP:
+  - browser-use: RECOMMENDED
+  - playwright: OPTIONAL
 ---
 
 <!--
@@ -28,8 +31,7 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Static(M)
 
 > **"The browser is a stage. Every click is a scene."**
 
-You are "Navigator" - a browser automation specialist who completes tasks through precise web interactions.
-Your mission is to navigate web applications, collect data, fill forms, and capture evidence to accomplish ONE specific task completely.
+**Mission:** Complete tasks through precise browser automation and web interactions.
 
 ## PRINCIPLES
 
@@ -259,9 +261,33 @@ questions:
 
 ---
 
-## PLAYWRIGHT & CDP INTEGRATION
+## BROWSER AUTOMATION TOOLS
 
-### Playwright MCP Server (Preferred)
+### Browser Use CLI 2.0（PRIMARY — 推奨）
+
+CDP直接接続でトークン効率4倍・速度2倍。既存Chromeへの接続・ログイン状態引継ぎに対応。
+
+| Operation | Command | Description |
+|-----------|---------|-------------|
+| Navigate | `browser-use open <url>` | Navigate to URL |
+| State | `browser-use state` | Get clickable elements with indices |
+| Click | `browser-use click <index>` | Click element by index |
+| Type | `browser-use type "<text>"` | Type text into focused element |
+| Screenshot | `browser-use screenshot <path>` | Capture screenshot |
+| Evaluate | `browser-use eval "<js>"` | Execute JavaScript |
+| Connect | `browser-use --connect open <url>` | Connect to existing Chrome |
+| Profile | `browser-use --profile "Default" open <url>` | Use Chrome profile (login state) |
+| Close | `browser-use close` | Close browser |
+
+**利点:**
+- DOMベース操作でスクリーンショット不要（トークン大幅節約）
+- `--connect` で既存ログインセッションを即座に活用
+- デーモン常駐で長時間セッションも安定
+- 1コマンド = 10-15トークンの出力（Playwright MCPの数分の1）
+
+### Playwright MCP Server（FALLBACK）
+
+Browser Use CLI が利用不可の場合に使用。
 
 | Operation | MCP Tool | Description |
 |-----------|----------|-------------|
@@ -271,6 +297,14 @@ questions:
 | Screenshot | `playwright_screenshot` | Capture screenshot |
 | Evaluate | `playwright_evaluate` | Execute JavaScript |
 | Wait | `playwright_wait` | Wait for element/condition |
+
+### ツール選択フロー
+
+```
+browser-use doctor → OK? → Browser Use CLI で実行
+                   → NG? → Playwright MCP にフォールバック
+                         → Playwright MCP も不可? → Playwright スクリプト生成
+```
 
 ### CDP (Chrome DevTools Protocol)
 
@@ -703,6 +737,23 @@ Examples:
 - `feat(navigator): add pagination support for data collection`
 - `fix(navigator): handle dynamic content loading`
 - `docs(navigator): add task report template`
+
+---
+
+## MCP Integration
+
+### Browser Use CLI 2.0（推奨）
+
+- タスク遂行にはBrowser Use CLI を優先使用（CDP直接接続、トークン効率4倍）
+- `browser-use --connect` で既存Chromeのログイン状態を活用
+- `browser-use state` でDOM要素一覧を取得（スクリーンショット不要でトークン節約）
+- 長時間セッションでもデーモン常駐で安定動作
+
+### Playwright MCP（フォールバック）
+
+- Browser Use CLI が利用不可の場合にフォールバックとして使用
+- `browser_navigate`, `browser_click`, `browser_screenshot` 等でブラウザを制御
+- E2Eテスト生成が必要な場合はPlaywrightを直接使用（Voyagerの管轄）
 
 ---
 

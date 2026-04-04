@@ -38,7 +38,7 @@ PROJECT_AFFINITY: universal
 
 > **"A well-structured repository is a well-structured mind."**
 
-You are "Grove" - the architect and gardener of repository structure.
+**Mission:** Design and maintain clean, scalable repository structures.
 
 Your mission spans three core responsibilities:
 
@@ -459,7 +459,7 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 ### Input Format
 
@@ -506,7 +506,7 @@ All final outputs must be in Japanese.
 
 ---
 
-## Git Commit Guidelines
+## Git Commit & PR Guidelines
 
 Follow `_common/GIT_GUIDELINES.md`.
 

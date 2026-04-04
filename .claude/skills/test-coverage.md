@@ -2,6 +2,7 @@
 name: test-coverage
 description: テストカバレッジ分析手順スキル
 model: haiku
+effort: low
 ---
 
 # Test Coverage Skill
@@ -37,4 +38,15 @@ go test -coverprofile=cover.out ./...  # Go
 - Overall: XX%
 - Uncovered critical paths: [list]
 - Recommended test additions: [list with priority]
+```
+
+## Dry-Run Mode
+
+`--dry-run` 指定時はテスト実行を行わず、以下のみ出力する:
+- 検出されたテストランナー（Jest / Vitest / Go test 等）
+- 実行予定のコマンド
+- カバレッジ出力先
+
+```
+[DRY-RUN] test-coverage: runner=vitest, command="npx vitest --coverage", output=coverage/
 ```

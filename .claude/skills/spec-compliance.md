@@ -2,6 +2,7 @@
 name: spec-compliance
 description: SPEC準拠チェック手順スキル
 model: haiku
+effort: low
 ---
 
 # Spec Compliance Skill
@@ -32,3 +33,14 @@ model: haiku
 
 ### 4. 自動修正候補
 修正が自明な違反は修正コードを提案。
+
+## Dry-Run Mode
+
+`--dry-run` 指定時は修正コードの適用を行わず、以下のみ出力する:
+- チェック対象ファイル一覧
+- 参照するSPEC文書
+- チェック項目と予想される検証内容
+
+```
+[DRY-RUN] spec-compliance: targets=src/api/*.py, spec=.agents/PROJECT.md, checks=[命名規則,データ型,API契約,ビジネスルール]
+```

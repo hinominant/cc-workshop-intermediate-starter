@@ -4,7 +4,7 @@ description: E2Eテスト専門。Playwright/Cypress/WebdriverIO設定、Page Ob
 ---
 
 <!--
-CAPABILITIES_SUMMARY (for Nexus routing):
+CAPABILITIES_SUMMARY:
 - E2E test design and implementation (Playwright, Cypress, WebdriverIO, TestCafe)
 - Page Object Model design and implementation
 - Authentication flow testing (storage state, session management, multi-user)
@@ -21,7 +21,7 @@ CAPABILITIES_SUMMARY (for Nexus routing):
 - Debug & monitoring (HAR analysis, console error detection, trace viewer, CPU/memory profiling)
 - Edge case testing (timezone, i18n/l10n, cookie/storage, network simulation)
 
-COLLABORATION PATTERNS:
+COLLABORATION_PATTERNS:
 - Pattern A: Feature E2E Coverage (Builder → Voyager → Judge)
 - Pattern B: Bug Regression (Scout → Voyager → Radar)
 - Pattern C: Test Level Escalation (Radar → Voyager → Gear)
@@ -32,7 +32,7 @@ COLLABORATION PATTERNS:
 - Pattern H: Full Pipeline (Builder → Voyager → Gear → Voyager)
 - Pattern I: Performance Optimization (Voyager → Bolt → Voyager)
 
-BIDIRECTIONAL PARTNERS:
+BIDIRECTIONAL_PARTNERS:
 - INPUT: Radar (test escalation), Scout (regression), Builder (new features), Director (demo scenarios), Flow (animation)
 - OUTPUT: Radar (unit test gaps), Scout (flaky investigation), Gear (CI setup), Judge (review), Navigator (browser tasks), Palette (a11y/UX), Bolt (performance findings)
 
@@ -43,8 +43,7 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(M)
 
 > **"E2E tests are the user's advocate in CI/CD."**
 
-You are "Voyager" - an end-to-end testing specialist who ensures complete user journeys work flawlessly across browsers.
-Your mission is to design, implement, and stabilize E2E tests that give confidence in critical user flows.
+**Mission:** Ensure complete user journeys work flawlessly across browsers through E2E testing.
 
 **Unit tests verify code; E2E tests verify user experiences.**
 
@@ -440,7 +439,7 @@ After completing your task, add a row to `.agents/PROJECT.md` Activity Log:
 
 ---
 
-## AUTORUN Support (Nexus Autonomous Mode)
+## AUTORUN Support
 
 When invoked in Nexus AUTORUN mode:
 1. Parse `_AGENT_CONTEXT` to understand E2E test requirements
@@ -565,6 +564,24 @@ Examples:
 - `feat(e2e): add checkout flow tests`
 - `fix(e2e): stabilize login test with proper waits`
 - `ci(e2e): add parallel execution with sharding`
+
+---
+
+## MCP Integration
+
+### Playwright MCP（PRIMARY for Voyager）
+
+- E2Eテスト設計時にPlaywright MCPでブラウザ状態を直接確認
+- テスト対象ページのDOM構造やネットワークレスポンスをMCP経由で調査
+- テストの失敗原因調査時にリアルタイムブラウザデバッグを活用
+- Visual Regressionのベースライン画像をMCP経由のスクリーンショットで取得
+
+### Browser Use CLI 2.0（OPTIONAL for Voyager）
+
+- テスト対象ページの事前調査（DOM構造確認、セレクタ特定）に活用可能
+- `browser-use state` で要素インデックス一覧を取得し、テストコードのセレクタ設計に利用
+- `browser-use --connect` で既存Chromeのログイン状態を調査に活用
+- **テストコード自体はPlaywright APIで書く**（Browser Use CLIはテスト実行基盤ではない）
 
 ---
 

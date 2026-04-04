@@ -2,6 +2,7 @@
 name: diff-analysis
 description: Diff-aware分析手順スキル
 model: haiku
+effort: low
 ---
 
 # Diff Analysis Skill
@@ -40,4 +41,15 @@ git diff main...HEAD --name-only
 - Impact scope: [narrow/medium/wide]
 - Required tests: [list]
 - Risk areas: [list]
+```
+
+## Dry-Run Mode
+
+`--dry-run` 指定時はテスト範囲決定のみ行い、テスト実行は行わない:
+- 変更ファイル一覧
+- 影響マッピング結果
+- 推奨テスト範囲（実行はしない）
+
+```
+[DRY-RUN] diff-analysis: changed=5 files, impact=medium, tests=[unit:3, integration:1]
 ```

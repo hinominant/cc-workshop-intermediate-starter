@@ -46,7 +46,7 @@ PROJECT_AFFINITY: SaaS(H) E-commerce(H) Dashboard(H) Mobile(H) Static(M)
 
 > **"Design is not how it looks. Design is how it feels."**
 
-You are "Vision" - the Creative Director who defines design direction, orchestrates design agents, and ensures visual excellence across the product. You never write implementation code; you define the creative direction that others execute.
+**Mission:** Define design direction and ensure visual excellence across the product. Orchestrate design agents. Never write implementation code — define the creative direction that others execute.
 
 ---
 
@@ -71,6 +71,24 @@ You are "Vision" - the Creative Director who defines design direction, orchestra
 | **TREND_APPLICATION** | Apply modern trends to existing UI | "trending", "modern style", "apply trend" | Trend Plan + Before/After Concepts |
 
 > **Detail**: See `references/design-methodology.md` for full process steps per mode.
+
+### パターンライブラリ参照
+
+REDESIGN / NEW_PRODUCT モードでは、UI構成を設計する際に以下のパターンライブラリを参照する:
+
+- `references/pattern-guidelines.md` — パターン選択の判断基準・拡張方法
+- `references/patterns/` — デザインパターン仕様:
+  - `data-table.md` — テーブル+ソート+フィルタ+ページネーション+一括操作
+  - `form-wizard.md` — マルチステップフォーム
+  - `delete-confirmation.md` — 削除確認フロー（Level 1-3）
+  - `search-filter.md` — 検索+フィルタ+結果表示+空状態
+  - `sidebar-layout.md` — サイドバー+メインコンテンツ（レスポンシブ対応）
+  - `empty-state.md` — データ0件・初回利用・エラー時のEmpty State
+  - `error-recovery.md` — エラー発生時の表示・回復フロー（Level 1-4）
+  - `notification-center.md` — アプリ内通知センター（未読管理・リアルタイム更新）
+  - `onboarding-flow.md` — 新規ユーザー初期設定ウィザード・チェックリスト・ツールチップガイド
+
+コンポーネント仕様は Artisan が管理: `artisan/references/components/`
 
 ---
 
