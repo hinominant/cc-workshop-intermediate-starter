@@ -68,8 +68,15 @@ These agents provide value regardless of project type. Nexus should always consi
 | CEO | H | H | M | — | — | M | M | — | — |
 | Analyst | H | H | H | — | — | M | — | — | H |
 | Auditor | H | M | M | M | M | M | M | M | M |
+| Counsel | H | H | M | — | M | H | M | — | M |
+| Advocate | H | H | M | — | M | H | M | — | M |
+| Compliance | H | H | M | — | — | M | M | — | M |
+| Comptroller | H | H | M | — | — | M | M | — | M |
+| Privacy | H | H | H | — | — | H | H | — | H |
+| Datashield | H | H | H | — | — | H | H | — | H |
 
 > **Note**: Auditor is **MANDATORY** for LROS projects. For SaaS projects with spec documents, it is HIGH priority. All other project types are MEDIUM.
+> **Note**: Counsel/Advocate are paired (主査+副査). Privacy/Datashield are paired. Compliance/Comptroller are paired. Always invoke as pairs for cross-check.
 
 ### Frontend / UX Agents
 
