@@ -6,31 +6,16 @@
 |------|-----|
 | Name | Dialog |
 | Description | ユーザーの注意を集中させ、操作・情報入力・確認を促すオーバーレイ要素 |
+| Figma Source | Luna DS v3 / Dialog |
 | Layer | Organism |
 | Category | Overlay |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Variants
 
-```
-┌─ Backdrop (overlay) ────────────────────────┐
-│                                              │
-│   ┌─ Dialog ─────────────────────────────┐   │
-│   │ [1]Header                            │   │
-│   │   [2]Title     [3]Close Button       │   │
-│   │   [4]Description                     │   │
-│   ├──────────────────────────────────────┤   │
-│   │ [5]Body                              │   │
-│   │   コンテンツ / フォーム               │   │
-│   ├──────────────────────────────────────┤   │
-│   │ [6]Footer                            │   │
-│   │   [7]Secondary Action  [8]Primary    │   │
-│   └──────────────────────────────────────┘   │
-│                                              │
-└──────────────────────────────────────────────┘
-```
+### Anatomy
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
@@ -43,37 +28,6 @@
 | 7 | Secondary Action | Optional | キャンセル等の補助アクション |
 | 8 | Primary Action | Required (Footer有時) | 主要アクション |
 
----
-
-## Props / API
-
-```typescript
-interface DialogProps {
-  /** ダイアログタイプ */
-  type?: 'default' | 'alert' | 'confirm' | 'form' | 'fullscreen';
-  /** サイズ */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
-  /** 開閉状態 */
-  isOpen: boolean;
-  /** タイトル */
-  title: string;
-  /** 説明文 */
-  description?: string;
-  /** Backdrop クリックで閉じるか */
-  isDismissable?: boolean;
-  /** 閉じるハンドラ */
-  onClose: () => void;
-  /** コンテンツ */
-  children: ReactNode;
-  /** フッターアクション */
-  footer?: ReactNode;
-}
-```
-
----
-
-## Variants
-
 ### Size
 
 | Size | Width | Use Case |
@@ -82,7 +36,7 @@ interface DialogProps {
 | md | 560px | 標準フォーム、情報表示 |
 | lg | 720px | 複雑なフォーム、プレビュー |
 | xl | 960px | データテーブル、比較画面 |
-| fullscreen | 100vw × 100vh | 集中操作、モバイル |
+| fullscreen | 100vw x 100vh | 集中操作、モバイル |
 
 **max-height:** `calc(100vh - 128px)` — 画面端から64pxのマージン
 
@@ -90,48 +44,63 @@ interface DialogProps {
 
 | Type | Close Button | Backdrop Dismiss | Footer | Use Case |
 |------|-------------|-----------------|--------|----------|
-| default | ✓ | ✓ | Optional | 情報表示 |
-| alert | ✗ | ✗ | Required（OKのみ） | 重要通知、エラー |
-| confirm | ✓ | ✗ | Required（2ボタン） | 操作確認 |
-| form | ✓ | ✗ | Required（送信+キャンセル） | データ入力 |
-| fullscreen | ✓ | ✗ | Optional | 集中操作 |
+| default | yes | yes | Optional | 情報表示 |
+| alert | no | no | Required（OKのみ） | 重要通知、エラー |
+| confirm | yes | no | Required（2ボタン） | 操作確認 |
+| form | yes | no | Required（送信+キャンセル） | データ入力 |
+| fullscreen | yes | no | Optional | 集中操作 |
 
 **confirm/form でBackdrop Dismissを無効にする理由:** 入力途中のデータ損失を防ぐ。
 
 ---
 
-## States
+## Props
 
-| State | Visual Change | ARIA | Trigger |
-|-------|--------------|------|---------|
-| closed | 非表示 | `aria-hidden="true"` | isOpen=false |
-| opening | フェードイン + スケールアニメーション | — | isOpen=true |
-| open | 表示 | — | アニメーション完了 |
-| closing | フェードアウト | — | onClose |
-| loading | Body内にローディング表示、アクション無効 | `aria-busy="true"` | 非同期処理中 |
-
-**アニメーション:**
-- 開: `opacity: 0→1`, `scale: 0.95→1`, `duration: 200ms`, `ease-out`
-- 閉: `opacity: 1→0`, `duration: 150ms`, `ease-in`
-- Backdrop: `opacity: 0→0.5`, `duration: 200ms`
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| type | `'default' \| 'alert' \| 'confirm' \| 'form' \| 'fullscreen'` | `'default'` | ダイアログタイプ |
+| size | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'fullscreen'` | `'md'` | サイズ |
+| isOpen | `boolean` | — | 開閉状態（必須） |
+| title | `string` | — | タイトル（必須） |
+| description | `string` | — | 説明文 |
+| isDismissable | `boolean` | — | Backdrop クリックで閉じるか |
+| onClose | `() => void` | — | 閉じるハンドラ（必須） |
+| children | `ReactNode` | — | コンテンツ |
+| footer | `ReactNode` | — | フッターアクション |
 
 ---
 
-## Design Tokens
+## Token Mapping
 
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
+| Element | Token | Value |
+|---------|-------|-------|
+| ダイアログ背景 | `bg-default` | `#FFFFFF` (Black/0) |
+| ボーダー | `border-default` | `#DADADD` (Black/200) |
+| 角丸 | `radius-lg` | 16px |
+| Backdrop | — | `rgba(0, 0, 0, 0.5)` |
+| Header下線 | `border-divider` | `#EFEEF0` (Black/100) |
+| Footer上線 | `border-divider` | `#EFEEF0` (Black/100) |
+| 内部パディング | `space-xl` | 24px |
+| タイトルテキスト | `text-default` | `#27272A` (Black/950) |
+| 本文テキスト | `text-secondary` | `#777681` (Black/500) |
 
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--dialog-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | ダイアログ背景 |
-| `--dialog-border` | `var(--color-border-default)` | Black/200 `#DADADD` | ボーダー |
-| `--dialog-radius` | `var(--radius-lg)` | `16px` | 角丸 |
-| `--dialog-backdrop` | `rgba(0, 0, 0, 0.5)` | — | Backdrop色 |
-| `--dialog-header-border` | `var(--color-border-divider)` | Black/100 `#EFEEF0` | Header下線 |
-| `--dialog-footer-border` | `var(--color-border-divider)` | Black/100 `#EFEEF0` | Footer上線 |
-| `--dialog-padding` | `var(--space-xl)` | `24px` | 内部パディング |
-| `--dialog-title-text` | `var(--color-text-default)` | Black/950 `#27272A` | タイトルテキスト |
-| `--dialog-body-text` | `var(--color-text-secondary)` | Black/500 `#777681` | 本文テキスト |
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| closed | 非表示 | `aria-hidden="true"` |
+| opening | フェードイン + スケールアニメーション | — |
+| open | 表示 | — |
+| closing | フェードアウト | — |
+| loading | Body内にローディング表示、アクション無効 | `aria-busy="true"` |
+
+### Animation
+
+- 開: `opacity: 0→1`, `scale: 0.95→1`, `duration: 200ms`, `ease-out`
+- 閉: `opacity: 1→0`, `duration: 150ms`, `ease-in`
+- Backdrop: `opacity: 0→0.5`, `duration: 200ms`
 
 ---
 
@@ -167,22 +136,20 @@ interface DialogProps {
 ## Do / Don't
 
 ### Do
-- ✅ タイトルは動詞ベース（「項目を削除」「プロフィールを編集」） → 目的が明確
-- ✅ 破壊的操作には影響範囲を説明文に明記 → `vision/references/patterns/delete-confirmation.md` 参照
-- ✅ フォームダイアログでは未保存変更の確認を実装 → データ損失防止
-- ✅ ボタンラベルは具体的な動詞（「削除する」「保存する」） → 「OK」「はい」より明確
+- タイトルは動詞ベース（「項目を削除」「プロフィールを編集」） → 目的が明確
+- 破壊的操作には影響範囲を説明文に明記
+- フォームダイアログでは未保存変更の確認を実装 → データ損失防止
+- ボタンラベルは具体的な動詞（「削除する」「保存する」） → 「OK」「はい」より明確
 
 ### Don't
-- ❌ ダイアログの中でダイアログを開かない → ユーザーの文脈喪失
-- ❌ 長いコンテンツにダイアログを使わない → 専用ページを使う
-- ❌ 成功通知にダイアログを使わない → Toast/Snackbar を使う
-- ❌ 「はい/いいえ」ボタンを使わない → 具体的な動詞ラベルを使う
+- ダイアログの中でダイアログを開かない → ユーザーの文脈喪失
+- 長いコンテンツにダイアログを使わない → 専用ページを使う
+- 成功通知にダイアログを使わない → Toast/Snackbar を使う
+- 「はい/いいえ」ボタンを使わない → 具体的な動詞ラベルを使う
 
 ---
 
 ## Related
-
-### Similar Components
 
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|
@@ -192,6 +159,4 @@ interface DialogProps {
 | Popover | 要素近くの補足情報 | 複雑な操作 |
 
 ### Composition Patterns
-- → `vision/references/patterns/delete-confirmation.md` — 削除確認フロー
-- → `vision/references/patterns/form-wizard.md` — ダイアログ内フォーム
 - → `button.md` — フッターのボタン配置（Secondary左、Primary右）

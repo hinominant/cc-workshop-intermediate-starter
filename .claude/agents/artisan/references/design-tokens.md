@@ -1,7 +1,7 @@
 # Luna Design System v3 — Design Tokens
 
 > Source: Figma `JkMNWC0yUllgd8ml9ZlqWk` (Luna DS v3)
-> Last synced: 2026-03-12
+> Last synced: 2026-03-18
 
 ---
 
@@ -36,7 +36,7 @@
 | 500 | `#685BF9` |
 | 600 | `#5538EE` |
 | 700 | `#4D2FD3` |
-| 800 | `#4D2FD3` |
+| 800 | `#4228B5` |
 | 900 | `#362986` |
 | 950 | `#22184E` |
 
@@ -63,7 +63,7 @@
 | 50 | `#FFF0F2` |
 | 100 | `#FFDDE1` |
 | 200 | `#FFC0C8` |
-| 300 | `#FFC0C8` |
+| 300 | `#FF9DAB` |
 | 400 | `#FF576B` |
 | 500 | `#FF233E` |
 | 600 | `#FF001F` |
@@ -139,6 +139,7 @@
 | `bg-success` | Green/500 | `#18CF83` |
 | `bg-disabled` | Black/200 | `#DADADD` |
 | `bg-status-pending` | Yellow/400 | `#FFC90D` |
+| `bg-warning` | Yellow/50 | `#FFFCE7` |
 
 ### Text
 
@@ -150,17 +151,18 @@
 | `text-inverse` | Black/0 | `#FFFFFF` |
 | `text-emphasis` | Brand/600 | `#5538EE` |
 | `text-critical` | Red/700 | `#D7001A` |
+| `text-warning` | Yellow/700 | `#A67C00` |
 
 ### Icon
 
 | Token | Primitive | HEX |
 |-------|-----------|-----|
 | `icon-default` | Black/950 | `#27272A` |
-| `icon-secondary` | Black/500 | `#777681` |
+| `icon-secondary` | Black/400 | `#94939D` |
 | `icon-inverse` | Black/0 | `#FFFFFF` |
 | `icon-emphasis` | Brand/600 | `#5538EE` |
 | `icon-emphasis-secondary` | Brand/300 | `#A0A7FF` |
-| `icon-disabled` | Black/300 | `#BAB9C0` |
+| `icon-disabled` | Black/200 | `#DADADD` |
 | `icon-disabled-secondary` | Black/400 | `#94939D` |
 | `icon-critical` | Red/700 | `#D7001A` |
 
@@ -214,6 +216,24 @@
 | `font-weight-regular` | 400 (Regular) |
 | `font-weight-bold` | 700 (Bold) |
 
+### Text Styles
+
+| Style | Size | Weight |
+|-------|------|--------|
+| `Heading/lg` | 2xl (32px) | Bold (700) |
+| `Heading/md` | xl (24px) | Bold (700) |
+| `Heading/sm` | lg (16px) | Bold (700) |
+| `Body/lg-default` | lg (16px) | Regular (400) |
+| `Body/lg-bold` | lg (16px) | Bold (700) |
+| `Body/md-default` | md (14px) | Regular (400) |
+| `Body/md-bold` | md (14px) | Bold (700) |
+| `Body/sm-default` | sm (12px) | Regular (400) |
+| `Body/sm-bold` | sm (12px) | Bold (700) |
+| `Body/xs-default` | xs (11px) | Regular (400) |
+| `Body/xs-bold` | xs (11px) | Bold (700) |
+| `Body/2xs-default` | 2xs (10px) | Regular (400) |
+| `Body/2xs-bold` | 2xs (10px) | Bold (700) |
+
 ---
 
 ## Space
@@ -266,19 +286,64 @@
 
 ---
 
+## Focus Ring
+
+| Token | Value |
+|-------|-------|
+| `focus-ring-width` | 2px |
+| `focus-ring-color` | Brand/200 (`#C4CAFF`) |
+| `focus-ring-offset` | 2px |
+
+---
+
+## Shadow
+
+| Token | Value |
+|-------|-------|
+| `shadow-sm` | 0 1px 2px rgba(0,0,0,0.05) |
+| `shadow-md` | 0 4px 8px rgba(0,0,0,0.08) |
+| `shadow-lg` | 0 8px 16px rgba(0,0,0,0.12) |
+| `shadow-xl` | 0 16px 32px rgba(0,0,0,0.16) |
+
+---
+
+## Z-Index
+
+| Token | Value |
+|-------|-------|
+| `z-dropdown` | 1000 |
+| `z-sticky` | 1020 |
+| `z-modal` | 1100 |
+| `z-popover` | 1200 |
+| `z-toast` | 1300 |
+| `z-tooltip` | 1500 |
+
+---
+
+## Transition
+
+| Token | Value |
+|-------|-------|
+| `duration-fast` | 150ms |
+| `duration-normal` | 200ms |
+| `duration-slow` | 300ms |
+| `easing-default` | cubic-bezier(0.4, 0, 0.2, 1) |
+| `easing-in` | cubic-bezier(0.4, 0, 1, 1) |
+| `easing-out` | cubic-bezier(0, 0, 0.2, 1) |
+
+---
+
 ## Icons
 
 | Property | Value |
 |----------|-------|
-| Library | Material Symbols (new) |
+| Library | Material Symbols |
 | Style | Rounded |
-| Weight | 300 |
-| Grade | -25 (low) ~ 200 (high emphasis) |
-| Optical Size | 20px ~ 48px |
+| Sizes | 20px, 24px, 48px |
 
 ---
 
-## CSS Custom Properties (実装リファレンス)
+## CSS Custom Properties
 
 ```css
 :root {
@@ -305,15 +370,28 @@
   --brand-500: #685BF9;
   --brand-600: #5538EE;
   --brand-700: #4D2FD3;
-  --brand-800: #4D2FD3;
+  --brand-800: #4228B5;
   --brand-900: #362986;
   --brand-950: #22184E;
+
+  /* --- Primitive: Pink --- */
+  --pink-50: #FEF1F9;
+  --pink-100: #FEE5F5;
+  --pink-200: #FFCAED;
+  --pink-300: #FF9FDC;
+  --pink-400: #FF63C2;
+  --pink-500: #FF2BA3;
+  --pink-600: #F01285;
+  --pink-700: #D10569;
+  --pink-800: #AD0756;
+  --pink-900: #8F0C4A;
+  --pink-950: #580028;
 
   /* --- Primitive: Red --- */
   --red-50: #FFF0F2;
   --red-100: #FFDDE1;
   --red-200: #FFC0C8;
-  --red-300: #FFC0C8;
+  --red-300: #FF9DAB;
   --red-400: #FF576B;
   --red-500: #FF233E;
   --red-600: #FF001F;
@@ -322,14 +400,44 @@
   --red-900: #920A1B;
   --red-950: #50000A;
 
-  /* --- Primitive: Green --- */
-  --green-500: #18CF83;
-
   /* --- Primitive: Yellow --- */
+  --yellow-50: #FFFCE7;
+  --yellow-100: #FFF9C1;
+  --yellow-200: #FFEF86;
+  --yellow-300: #FFDD41;
   --yellow-400: #FFC90D;
+  --yellow-500: #E6A600;
+  --yellow-600: #D18500;
+  --yellow-700: #A65D02;
+  --yellow-800: #89490A;
+  --yellow-900: #743B0F;
+  --yellow-950: #441E04;
+
+  /* --- Primitive: Green --- */
+  --green-50: #EFFEF7;
+  --green-100: #DAFEEE;
+  --green-200: #B7FBDE;
+  --green-300: #80F5C3;
+  --green-400: #41E7A2;
+  --green-500: #18CF83;
+  --green-600: #0DA566;
+  --green-700: #0F8655;
+  --green-800: #116A46;
+  --green-900: #10573B;
+  --green-950: #033020;
 
   /* --- Primitive: Blue --- */
+  --blue-50: #EFF8FF;
+  --blue-100: #DEF0FF;
+  --blue-200: #B6E2FF;
+  --blue-300: #75CCFF;
   --blue-400: #2CB3FF;
+  --blue-500: #008CE3;
+  --blue-600: #0079D4;
+  --blue-700: #0060AB;
+  --blue-800: #00518D;
+  --blue-900: #064474;
+  --blue-950: #042B4D;
 
   /* --- Semantic: Background --- */
   --color-bg-default: var(--black-0);
@@ -343,6 +451,7 @@
   --color-bg-success: var(--green-500);
   --color-bg-disabled: var(--black-200);
   --color-bg-status-pending: var(--yellow-400);
+  --color-bg-warning: var(--yellow-50);
 
   /* --- Semantic: Text --- */
   --color-text-default: var(--black-950);
@@ -351,14 +460,15 @@
   --color-text-inverse: var(--black-0);
   --color-text-emphasis: var(--brand-600);
   --color-text-critical: var(--red-700);
+  --color-text-warning: var(--yellow-700);
 
   /* --- Semantic: Icon --- */
   --color-icon-default: var(--black-950);
-  --color-icon-secondary: var(--black-500);
+  --color-icon-secondary: var(--black-400);
   --color-icon-inverse: var(--black-0);
   --color-icon-emphasis: var(--brand-600);
   --color-icon-emphasis-secondary: var(--brand-300);
-  --color-icon-disabled: var(--black-300);
+  --color-icon-disabled: var(--black-200);
   --color-icon-disabled-secondary: var(--black-400);
   --color-icon-critical: var(--red-700);
 
@@ -414,5 +524,32 @@
   --border-width-md: 2px;
   --border-width-lg: 3px;
   --border-width-xl: 4px;
+
+  /* --- Focus Ring --- */
+  --focus-ring-width: 2px;
+  --focus-ring-color: var(--brand-200);
+  --focus-ring-offset: 2px;
+
+  /* --- Shadow --- */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 16px rgba(0,0,0,0.12);
+  --shadow-xl: 0 16px 32px rgba(0,0,0,0.16);
+
+  /* --- Z-Index --- */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal: 1100;
+  --z-popover: 1200;
+  --z-toast: 1300;
+  --z-tooltip: 1500;
+
+  /* --- Transition --- */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-out: cubic-bezier(0, 0, 0.2, 1);
 }
 ```

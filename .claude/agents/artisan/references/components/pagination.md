@@ -6,18 +6,16 @@
 |------|-----|
 | Name | Pagination |
 | Description | 大量データを複数ページに分割して表示・ナビゲートするコンポーネント |
+| Figma Source | Luna DS v3 / Pagination |
 | Layer | Molecule |
 | Category | Navigation |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Variants
 
-```
-[<] [1] [2] [3] [...] [8] [9] [10] [>]
- 1   2       3    4            5    6
-```
+### Anatomy
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
@@ -27,36 +25,6 @@
 | 4 | Ellipsis | Optional | 省略表示（ページ数が多い場合） |
 | 5 | Last Page Group | Optional | 最後のページグループ |
 | 6 | Next Button | Required | 次ページへ（無効化: 最終ページ） |
-
----
-
-## Props / API
-
-```typescript
-interface PaginationProps {
-  /** 総ページ数 */
-  totalPages: number;
-  /** 現在のページ（1始まり） */
-  currentPage: number;
-  /** ページ変更コールバック */
-  onPageChange: (page: number) => void;
-  /** 省略なしで表示するページ数の境界 */
-  siblingCount?: number;
-  /** 両端に常に表示するページ数 */
-  boundaryCount?: number;
-  /** サイズ */
-  size?: 'sm' | 'md';
-  /** 前/次ボタンのラベル（アクセシビリティ用） */
-  prevLabel?: string;
-  nextLabel?: string;
-}
-```
-
-**デフォルト値:** `siblingCount=1`, `boundaryCount=1`, `size='md'`, `prevLabel='前のページ'`, `nextLabel='次のページ'`
-
----
-
-## Variants
 
 ### 表示パターン（総ページ数別）
 
@@ -84,8 +52,8 @@ interface PaginationProps {
 
 | Size | Button Size | Font Size | Gap |
 |------|------------|-----------|-----|
-| sm | 28px × 28px | 12px | 2px |
-| md | 36px × 36px | 14px | 4px |
+| sm | 28px x 28px | 12px | 2px |
+| md | 36px x 36px | 14px | 4px |
 
 ### ページボタンスタイル
 
@@ -98,29 +66,42 @@ interface PaginationProps {
 
 ---
 
-## States
+## Props
 
-| State | Visual Change | CSS |
-|-------|--------------|-----|
-| page-hover | 背景色変化 | `background: var(--color-bg-tertiary)` |
-| page-focus | フォーカスリング | `outline: 2px solid var(--color-border-emphasis)` |
-| page-current | 強調表示 | `background: var(--color-bg-emphasis); color: #FFF` |
-| prev/next-disabled | 淡色 | `opacity: 0.4; cursor: not-allowed` |
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| totalPages | `number` | — | 総ページ数（必須） |
+| currentPage | `number` | — | 現在のページ（1始まり、必須） |
+| onPageChange | `(page: number) => void` | — | ページ変更コールバック（必須） |
+| siblingCount | `number` | `1` | 省略なしで表示するページ数の境界 |
+| boundaryCount | `number` | `1` | 両端に常に表示するページ数 |
+| size | `'sm' \| 'md'` | `'md'` | サイズ |
+| prevLabel | `string` | `'前のページ'` | 前ボタンのラベル（アクセシビリティ用） |
+| nextLabel | `string` | `'次のページ'` | 次ボタンのラベル（アクセシビリティ用） |
 
 ---
 
-## Design Tokens
+## Token Mapping
 
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
+| Element | Token | Value |
+|---------|-------|-------|
+| md ボタンサイズ | — | 36px |
+| sm ボタンサイズ | — | 28px |
+| 角丸 | `radius-sm` | 4px |
+| 現在ページ背景 | `bg-emphasis` | `#5538EE` (Brand/600) |
+| 現在ページテキスト | `text-inverse` | `#FFFFFF` (Black/0) |
+| ボタン間隔 (md) | — | 4px |
 
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--pagination-btn-size-md` | — | `36px` | mdボタンサイズ |
-| `--pagination-btn-size-sm` | — | `28px` | smボタンサイズ |
-| `--pagination-radius` | `var(--radius-sm)` | `4px` | 角丸 |
-| `--pagination-current-bg` | `var(--color-bg-emphasis)` | `#5538EE` | 現在ページ背景 |
-| `--pagination-current-text` | `var(--color-text-inverse)` | `#FFFFFF` | 現在ページテキスト |
-| `--pagination-gap-md` | — | `4px` | ボタン間隔 |
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| page-hover | 背景色 `bg-tertiary` に変化 | — |
+| page-focus | フォーカスリング表示 | — |
+| page-current | `bg-emphasis` 背景、`text-inverse` テキスト | `aria-current="page"` |
+| prev/next-disabled | opacity: 0.4, cursor: not-allowed | `aria-disabled="true"` |
 
 ---
 
@@ -128,8 +109,8 @@ interface PaginationProps {
 
 ### ARIA
 
-| Attribute | Value | 付与先 |
-|-----------|-------|--------|
+| Attribute | Value | Condition |
+|-----------|-------|-----------|
 | `aria-label` | `"ページネーション"` | `<nav>` 要素 |
 | `aria-current` | `"page"` | 現在のページボタン |
 | `aria-label` | `"前のページ"` | Prevボタン |
@@ -142,27 +123,28 @@ interface PaginationProps {
 
 | Key | Action |
 |-----|--------|
-| Tab | ページボタンを順にフォーカス |
-| Enter / Space | ページへ移動 |
+| `Tab` | ページボタンを順にフォーカス |
+| `Enter` / `Space` | ページへ移動 |
 
 ---
 
 ## Do / Don't
 
 ### Do
-- ✅ 総件数・表示範囲も合わせて表示する → 「1〜20件 / 全234件」
-- ✅ URL に `?page=N` を反映する → ブックマーク・共有可能に
-- ✅ ページ変更時はリスト先頭にスクロールする
+- 総件数・表示範囲も合わせて表示する → 「1〜20件 / 全234件」
+- URL に `?page=N` を反映する → ブックマーク・共有可能に
+- ページ変更時はリスト先頭にスクロールする
 
 ### Don't
-- ❌ 20件以下のデータにPaginationを使わない → 全件表示かInfinite Scrollを検討
-- ❌ ページ数が多い場合に全ページボタンを表示しない → 省略（Ellipsis）を使う
-- ❌ 現在ページの `<button>` を `disabled` にしない → `aria-current="page"` でマーク
+- 20件以下のデータにPaginationを使わない → 全件表示かInfinite Scrollを検討
+- ページ数が多い場合に全ページボタンを表示しない → 省略（Ellipsis）を使う
+- 現在ページの `<button>` を `disabled` にしない → `aria-current="page"` でマーク
 
 ---
 
 ## Related
 
-### Composition Patterns
-- → `artisan/references/components/table.md` — テーブルとのセット使用
-- → `vision/references/patterns/search-filter.md` — 検索結果のページネーション
+| Component | Use When | Don't Use When |
+|-----------|----------|---------------|
+| Pagination | 大量データのページ分割 | 20件以下のデータ |
+| Table | テーブルとのセット使用 | — |

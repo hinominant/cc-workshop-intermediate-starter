@@ -6,32 +6,16 @@
 |------|-----|
 | Name | Table |
 | Description | 構造化データを行と列で表示するデータ表示要素 |
+| Figma Source | Luna DS v3 / Table |
 | Layer | Organism |
 | Category | Data Display |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Variants
 
-```
-┌──────────────────────────────────────────────────────┐
-│ [1]Toolbar                                            │
-│   [2]Bulk Actions    [3]Column Settings  [4]Density  │
-├──────────────────────────────────────────────────────┤
-│ [5]Header Row                                         │
-│ ☐  [6]Col Header ↑  Col Header  Col Header  Actions  │
-├──────────────────────────────────────────────────────┤
-│ [7]Data Row                                           │
-│ ☐  Cell            Cell        Cell        [8]Actions │
-│ ☐  Cell            Cell        Cell        Actions    │
-│    [9]Expandable Detail Row                           │
-│ ☐  Cell            Cell        Cell        Actions    │
-├──────────────────────────────────────────────────────┤
-│ [10]Footer                                            │
-│   選択: 3件  │  1-10 / 248件  < 1 2 3 ... 25 >       │
-└──────────────────────────────────────────────────────┘
-```
+### Anatomy
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
@@ -45,68 +29,6 @@
 | 8 | Row Actions | Optional | 行ごとの操作メニュー |
 | 9 | Expandable Row | Optional | 展開詳細行 |
 | 10 | Footer | Optional | ページネーション + 選択件数 |
-
----
-
-## Props / API
-
-```typescript
-interface TableProps<T> {
-  /** カラム定義 */
-  columns: ColumnDef<T>[];
-  /** データ */
-  data: T[];
-  /** ソート可能 */
-  isSortable?: boolean;
-  /** 行選択可能 */
-  isSelectable?: boolean;
-  /** 行展開可能 */
-  isExpandable?: boolean;
-  /** 表示密度 */
-  density?: 'compact' | 'normal' | 'comfortable';
-  /** ソート状態 */
-  sortState?: { column: string; direction: 'asc' | 'desc' };
-  /** 選択行 */
-  selectedRows?: T[];
-  /** ページネーション */
-  pagination?: { page: number; pageSize: number; total: number };
-  /** ローディング */
-  isLoading?: boolean;
-  /** 空状態メッセージ */
-  emptyMessage?: string;
-  /** ソート変更ハンドラ */
-  onSortChange?: (column: string, direction: 'asc' | 'desc') => void;
-  /** 選択変更ハンドラ */
-  onSelectionChange?: (rows: T[]) => void;
-  /** ページ変更ハンドラ */
-  onPageChange?: (page: number) => void;
-  /** 行展開ハンドラ */
-  onRowExpand?: (row: T) => void;
-}
-
-interface ColumnDef<T> {
-  /** カラムID */
-  id: string;
-  /** ヘッダーラベル */
-  header: string;
-  /** セルレンダリング */
-  cell: (row: T) => ReactNode;
-  /** ソート可能 */
-  isSortable?: boolean;
-  /** 幅 */
-  width?: string | number;
-  /** 最小幅 */
-  minWidth?: number;
-  /** テキスト配置 */
-  align?: 'left' | 'center' | 'right';
-  /** 固定列（横スクロール時） */
-  isSticky?: boolean;
-}
-```
-
----
-
-## Variants
 
 ### Density
 
@@ -129,38 +51,71 @@ interface ColumnDef<T> {
 
 ---
 
-## States
+## Props
 
-| State | Visual Change | ARIA | Trigger |
-|-------|--------------|------|---------|
-| default | — | — | 初期状態 |
-| loading | Skeleton行表示 or オーバーレイスピナー | `aria-busy="true"` | データ取得中 |
-| empty | emptyMessage + イラスト表示 | — | data.length === 0 |
-| error | エラーメッセージ + リトライボタン | `aria-live="polite"` | データ取得失敗 |
-| row-hover | 行背景色変化 | — | マウスオーバー |
-| row-selected | 行背景色: selected | `aria-selected="true"` | チェックボックス選択 |
-| row-expanded | 詳細行展開 | `aria-expanded="true"` | 行クリック/ボタン |
-| sorting | ソートインジケータ表示（↑/↓） | `aria-sort="ascending/descending"` | ヘッダークリック |
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| columns | `ColumnDef<T>[]` | — | カラム定義（必須） |
+| data | `T[]` | — | データ（必須） |
+| isSortable | `boolean` | — | ソート可能 |
+| isSelectable | `boolean` | — | 行選択可能 |
+| isExpandable | `boolean` | — | 行展開可能 |
+| density | `'compact' \| 'normal' \| 'comfortable'` | `'normal'` | 表示密度 |
+| sortState | `{ column: string; direction: 'asc' \| 'desc' }` | — | ソート状態 |
+| selectedRows | `T[]` | — | 選択行 |
+| pagination | `{ page: number; pageSize: number; total: number }` | — | ページネーション |
+| isLoading | `boolean` | — | ローディング |
+| emptyMessage | `string` | — | 空状態メッセージ |
+| onSortChange | `(column: string, direction: 'asc' \| 'desc') => void` | — | ソート変更ハンドラ |
+| onSelectionChange | `(rows: T[]) => void` | — | 選択変更ハンドラ |
+| onPageChange | `(page: number) => void` | — | ページ変更ハンドラ |
+| onRowExpand | `(row: T) => void` | — | 行展開ハンドラ |
+
+### ColumnDef
+
+| Property | Type | Description |
+|----------|------|-------------|
+| id | `string` | カラムID |
+| header | `string` | ヘッダーラベル |
+| cell | `(row: T) => ReactNode` | セルレンダリング |
+| isSortable | `boolean` | ソート可能 |
+| width | `string \| number` | 幅 |
+| minWidth | `number` | 最小幅 |
+| align | `'left' \| 'center' \| 'right'` | テキスト配置 |
+| isSticky | `boolean` | 固定列（横スクロール時） |
 
 ---
 
-## Design Tokens
+## Token Mapping
 
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
+| Element | Token | Value |
+|---------|-------|-------|
+| テーブル背景 | `bg-default` | `#FFFFFF` (Black/0) |
+| ヘッダー背景 | `bg-tertiary` | `#F7F7F8` (Black/50) |
+| ヘッダーテキスト | `text-secondary` | `#777681` (Black/500) |
+| 行ボーダー | `border-divider` | `#EFEEF0` (Black/100) |
+| 行ホバー | `bg-interactive` | `#EFEEF0` (Black/100) |
+| 選択行背景 | `bg-secondary` | `#EDEFFF` (Brand/50) |
+| ゼブラストライプ | `bg-tertiary` | `#F7F7F8` (Black/50) |
+| セルテキスト | `text-default` | `#27272A` (Black/950) |
+| ソートアイコン | `icon-default` | `#27272A` (Black/950) |
+| 非アクティブソート | `icon-disabled` | `#DADADD` (Black/200) |
+| テーブル角丸 | `radius-lg` | 16px |
 
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--table-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | テーブル背景 |
-| `--table-header-bg` | `var(--color-bg-tertiary)` | Black/50 `#F7F7F8` | ヘッダー背景 |
-| `--table-header-text` | `var(--color-text-secondary)` | Black/500 `#777681` | ヘッダーテキスト |
-| `--table-border` | `var(--color-border-divider)` | Black/100 `#EFEEF0` | 行ボーダー |
-| `--table-row-hover` | `var(--color-bg-interactive)` | Black/100 `#EFEEF0` | 行ホバー |
-| `--table-row-selected` | `var(--color-bg-secondary)` | Brand/50 `#EDEFFF` | 選択行背景 |
-| `--table-row-stripe` | `var(--color-bg-tertiary)` | Black/50 `#F7F7F8` | ゼブラストライプ |
-| `--table-text` | `var(--color-text-default)` | Black/950 `#27272A` | セルテキスト |
-| `--table-sort-icon` | `var(--color-icon-default)` | Black/950 `#27272A` | ソートアイコン |
-| `--table-sort-icon-inactive` | `var(--color-icon-disabled)` | Black/300 `#BAB9C0` | 非アクティブソート |
-| `--table-radius` | `var(--radius-lg)` | `16px` | テーブル角丸 |
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| default | 通常表示 | — |
+| loading | Skeleton行表示 or オーバーレイスピナー | `aria-busy="true"` |
+| empty | emptyMessage + イラスト表示 | — |
+| error | エラーメッセージ + リトライボタン | `aria-live="polite"` |
+| row-hover | 行背景色変化 | — |
+| row-selected | 行背景色: selected | `aria-selected="true"` |
+| row-expanded | 詳細行展開 | `aria-expanded="true"` |
+| sorting | ソートインジケータ表示（上/下） | `aria-sort="ascending/descending"` |
 
 ---
 
@@ -168,22 +123,22 @@ interface ColumnDef<T> {
 
 ### ARIA
 
-| Attribute | Element | Value |
-|-----------|---------|-------|
-| `role` | `<table>` | `table`（ネイティブ要素推奨） |
-| `aria-sort` | `<th>` | `ascending` / `descending` / `none` |
-| `aria-selected` | `<tr>` | `true`（選択行） |
-| `aria-expanded` | `<tr>` | `true`（展開行） |
-| `aria-busy` | `<table>` | `true`（ローディング中） |
-| `aria-rowcount` | `<table>` | 総行数（ページネーション時） |
-| `aria-label` | `<table>` | テーブルの説明 |
+| Attribute | Value | Condition |
+|-----------|-------|-----------|
+| `role` | `table` | ネイティブ要素推奨 |
+| `aria-sort` | `ascending` / `descending` / `none` | ソート可能ヘッダー |
+| `aria-selected` | `true` | 選択行 |
+| `aria-expanded` | `true` | 展開行 |
+| `aria-busy` | `true` | ローディング中 |
+| `aria-rowcount` | 総行数 | ページネーション時 |
+| `aria-label` | テーブルの説明 | 常時 |
 
 ### Keyboard
 
 | Key | Action |
 |-----|--------|
 | `Tab` | テーブル内のインタラクティブ要素間を移動 |
-| `↑` / `↓` | 行間の移動（selectable時） |
+| `ArrowUp` / `ArrowDown` | 行間の移動（selectable時） |
 | `Space` | 行の選択/選択解除 |
 | `Enter` | 行の展開/折りたたみ、または行アクション |
 
@@ -196,23 +151,21 @@ interface ColumnDef<T> {
 ## Do / Don't
 
 ### Do
-- ✅ ネイティブ `<table>` 要素を使用 → スクリーンリーダーのテーブルナビゲーション対応
-- ✅ 空状態で次のアクションを提示 → 「データがありません。新規作成してください」
-- ✅ ローディング中はSkeleton行を表示 → レイアウトシフト防止
-- ✅ 数値列は右揃え → 桁数の比較がしやすい
-- ✅ ソート可能列はヘッダーにインジケータ → 操作可能であることを示す
+- ネイティブ `<table>` 要素を使用 → スクリーンリーダーのテーブルナビゲーション対応
+- 空状態で次のアクションを提示 → 「データがありません。新規作成してください」
+- ローディング中はSkeleton行を表示 → レイアウトシフト防止
+- 数値列は右揃え → 桁数の比較がしやすい
+- ソート可能列はヘッダーにインジケータ → 操作可能であることを示す
 
 ### Don't
-- ❌ `<div>` でテーブルを組まない → a11yが破壊される
-- ❌ 10列以上を横一列に並べない → 横スクロール or 列選択機能を追加
-- ❌ 行全体をクリッカブルにしつつ行内にリンク/ボタンを置かない → クリック対象が曖昧
-- ❌ ページネーションなしで100行以上表示しない → パフォーマンス低下
+- `<div>` でテーブルを組まない → a11yが破壊される
+- 10列以上を横一列に並べない → 横スクロール or 列選択機能を追加
+- 行全体をクリッカブルにしつつ行内にリンク/ボタンを置かない → クリック対象が曖昧
+- ページネーションなしで100行以上表示しない → パフォーマンス低下
 
 ---
 
 ## Related
-
-### Similar Components
 
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|
@@ -222,5 +175,4 @@ interface ColumnDef<T> {
 | List | 単カラムの項目一覧 | 複数属性の比較 |
 
 ### Composition Patterns
-- → `vision/references/patterns/data-table.md` — ソート+フィルタ+ページネーション統合パターン
-- → `vision/references/patterns/search-filter.md` — テーブルと検索フィルタの組み合わせ
+- → `artisan/references/components/data-table.md` — ソート+フィルタ+ページネーション統合パターン

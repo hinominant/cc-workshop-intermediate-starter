@@ -6,134 +6,103 @@
 |------|-----|
 | Name | Select |
 | Description | 定義済みの選択肢リストから値を選択するフォーム要素 |
+| Figma Source | Luna DS v3 / Select |
 | Layer | Molecule |
 | Category | Form |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Figma Variants
 
-```
-[1]Label
-[2]Helper Text (optional)
-┌────────────────────────────────────────┐
-│ [3]Selected Value / Placeholder  [4]▼  │
-└────────────────────────────────────────┘
-   ┌────────────────────────────────┐
-   │ [5]Search Input (searchable)   │
-   ├────────────────────────────────┤
-   │ [6]Option Group Label          │
-   │   [7]Option (icon + label)     │
-   │   [7]Option (selected ✓)       │
-   │   [7]Option                    │
-   ├────────────────────────────────┤
-   │ [8]No results message          │
-   └────────────────────────────────┘
-[9]Error Message
-```
+| Variant Axis | Values |
+|--------------|--------|
+| Status | Default, Edit, Focus, Error, Error Edit, disabled |
+| Error Text | show, hide (boolean) |
+| Description | show, hide (boolean) |
 
-| # | Part | Required | Description |
-|----|------|----------|-------------|
-| 1 | Label | Required | 選択内容の説明 |
-| 2 | Helper Text | Optional | 選択のヒント |
-| 3 | Trigger | Required | 現在の選択値またはプレースホルダー |
-| 4 | Arrow | Required | ドロップダウン開閉インジケータ |
-| 5 | Search Input | Conditional | searchable時のフィルタ入力 |
-| 6 | Group Label | Optional | 選択肢のグループ見出し |
-| 7 | Option | Required | 個別の選択肢 |
-| 8 | Empty State | Conditional | 検索結果なし時のメッセージ |
-| 9 | Error Message | Conditional | バリデーションエラー |
+**Note:** TextField と同一のバリアント構造。右端に Chevron アイコンを配置。
 
 ---
 
 ## Props / API
 
 ```typescript
-interface SelectProps<T = string> {
-  /** 選択モード */
-  mode?: 'single' | 'multi';
-  /** サイズ */
-  size?: 'sm' | 'md' | 'lg';
-  /** ラベル */
+interface SelectProps {
+  /** 選択値 (制御コンポーネント) */
+  value?: string;
+  /** 初期値 */
+  defaultValue?: string;
+  /** ラベルテキスト */
   label: string;
-  /** プレースホルダー */
+  /** プレースホルダーテキスト */
   placeholder?: string;
-  /** 選択肢 */
-  options: SelectOption<T>[];
-  /** 選択値（single） */
-  value?: T;
-  /** 選択値（multi） */
-  values?: T[];
-  /** 検索可能 */
-  isSearchable?: boolean;
-  /** クリア可能 */
-  isClearable?: boolean;
-  /** 無効 */
-  isDisabled?: boolean;
-  /** 必須 */
-  isRequired?: boolean;
+  /** 無効状態 */
+  disabled?: boolean;
   /** エラー状態 */
-  isInvalid?: boolean;
+  error?: boolean;
   /** エラーメッセージ */
   errorMessage?: string;
-  /** ヘルパーテキスト */
-  helperText?: string;
-  /** 変更ハンドラ */
-  onChange?: (value: T | T[]) => void;
-}
-
-interface SelectOption<T = string> {
-  value: T;
-  label: string;
-  icon?: ReactNode;
-  isDisabled?: boolean;
-  group?: string;
+  /** 補足説明 */
+  description?: string;
+  /** 値変更コールバック */
+  onValueChange?: (value: string) => void;
+  /** フォームフィールド名 */
+  name?: string;
+  /** 選択肢 */
+  children: ReactNode;
 }
 ```
 
 ---
 
-## Variants
+## Size Specifications
 
-### Size
+| Property | Value |
+|----------|-------|
+| Height | 48px |
+| Border Radius | radius-sm (8px) |
+| Padding Left | 12px |
+| Padding Right | 40px (テキスト12px + chevronエリア28px) |
+| Border Width | border-width-sm (1px) |
+| Chevron Icon | `expand_more` (Material Symbols Rounded, 20px) |
+| Chevron Position | right 12px, vertically centered |
+| Label Font | Body/sm-bold (12px / Bold) |
+| Trigger Font | Body/md-default (14px / Regular) |
+| Error Text Font | Body/sm-default (12px / Regular) |
+| Gap (label - trigger) | space-xs (6px) |
+| Gap (trigger - error/description) | space-xs (6px) |
 
-| Size | Trigger Height | Option Height | Font Size | Use Case |
-|------|---------------|---------------|-----------|----------|
-| sm | 32px | 28px | 14px | フィルタ、テーブル内 |
-| md | 40px | 36px | 16px | 標準フォーム |
-| lg | 48px | 44px | 18px | モバイル |
+### Focus Ring
 
-### Mode
-
-| Mode | Trigger表示 | Max選択数 | Use Case |
-|------|------------|----------|----------|
-| single | 選択されたラベル1つ | 1 | 国、カテゴリ等の排他選択 |
-| multi | Tag/Chip の並び | 制限なし | タグ、スキル等の複数選択 |
-
-**Multi-select のTag表示:**
-- 3個まで: 個別Tag表示
-- 4個以上: 「3件 + 他N件」と省略
-
-### Searchable
-
-- `isSearchable=true` 時、ドロップダウン上部に検索入力を表示
-- 選択肢が10個以上の場合に推奨
-- フィルタはラベルテキストの部分一致
+| Property | Value |
+|----------|-------|
+| Width | 2px |
+| Color | Brand/200 `#C4CAFF` |
+| Offset | 2px |
+| Trigger | `:focus-visible` のみ |
 
 ---
 
-## States
+## Token Mapping per Status
 
-| State | Visual Change | ARIA | Trigger |
-|-------|--------------|------|---------|
-| default | border: `var(--color-border)` | `aria-expanded="false"` | 初期状態 |
-| hover | border: `var(--color-border-hover)` | — | マウスオーバー |
-| open | border: `var(--color-primary)`, ドロップダウン表示 | `aria-expanded="true"` | クリック/Enter/Space |
-| focused-option | 選択肢のハイライト | `aria-activedescendant` | 矢印キー |
-| selected | 選択値表示、✓マーク | `aria-selected="true"` | クリック/Enter |
-| disabled | opacity: 0.4 | `aria-disabled="true"` | isDisabled |
-| error | border: `var(--color-destructive)`, bg: `var(--select-error-bg)` Red/50 | `aria-invalid="true"` | isInvalid |
+| Status | Border Color | Background | Text Color | Description |
+|--------|-------------|------------|------------|-------------|
+| Default | border-default (`#DADADD`) | bg-default (`#FFFFFF`) | Placeholder: text-disabled (`#94939D`) | グレーボーダー、プレースホルダー表示 |
+| Edit | border-default (`#DADADD`) | bg-default (`#FFFFFF`) | text-default (`#27272A`) | グレーボーダー、選択済みテキスト表示 |
+| Focus | border-emphasis (`#5538EE`) | bg-default (`#FFFFFF`) | text-default (`#27272A`) | ブランドカラーボーダー + フォーカスリング |
+| Error | border-critical (`#FF001F`) | Red/50 (`#FFF0F2`) | text-critical (`#D7001A`) | 赤ボーダー、ピンク背景、赤エラーテキスト |
+| Error Edit | border-critical (`#FF001F`) | Red/50 (`#FFF0F2`) | text-default (`#27272A`) | 赤ボーダー、ピンク背景、選択済みテキスト + 赤エラーテキスト |
+| Disabled | none | bg-tertiary (`#F7F7F8`) | text-disabled (`#94939D`) | グレー背景、グレーテキスト、操作不可 |
+
+### Chevron Color per Status
+
+| Status | Chevron Color |
+|--------|--------------|
+| Default / Edit | icon-secondary `#94939D` |
+| Focus | icon-emphasis `#5538EE` |
+| Error / Error Edit | icon-critical `#D7001A` |
+| Disabled | icon-disabled `#DADADD` |
 
 ---
 
@@ -143,18 +112,75 @@ interface SelectOption<T = string> {
 
 | Token | DS v3 Reference | Resolved Value | Usage |
 |-------|----------------|----------------|-------|
-| `--select-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | トリガー背景 |
-| `--select-border` | `var(--color-border-default)` | Black/200 `#DADADD` | ボーダー |
-| `--select-border-focus` | `var(--color-border-emphasis)` | Brand/600 `#5538EE` | フォーカス時ボーダー |
-| `--select-dropdown-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | ドロップダウン背景 |
-| `--select-option-hover` | `var(--color-bg-interactive)` | Black/100 `#EFEEF0` | 選択肢ホバー |
-| `--select-option-selected` | `var(--color-bg-secondary)` | Brand/50 `#EDEFFF` | 選択済み背景 |
-| `--select-tag-bg` | `var(--color-bg-tertiary)` | Black/50 `#F7F7F8` | Multi Tag背景 |
-| `--select-text` | `var(--color-text-default)` | Black/950 `#27272A` | テキスト |
-| `--select-placeholder` | `var(--color-text-disabled)` | Black/400 `#94939D` | プレースホルダー |
-| `--select-icon` | `var(--color-icon-secondary)` | Black/500 `#777681` | 矢印アイコン |
-| `--select-error-bg` | `var(--color-bg-critical-subtle)` | Red/50 | エラー時背景色 |
-| `--select-radius` | `var(--radius-md)` | `12px` | 角丸 |
+| `--select-height` | — | `48px` | トリガー高さ |
+| `--select-radius` | `var(--radius-sm)` | `8px` | 角丸 |
+| `--select-padding-left` | `var(--space-md)` | `12px` | 左パディング |
+| `--select-padding-right` | — | `40px` | 右パディング (chevron含む) |
+| `--select-border` | `var(--color-border-default)` | `#DADADD` | デフォルトボーダー |
+| `--select-border-focus` | `var(--color-border-emphasis)` | `#5538EE` | フォーカスボーダー |
+| `--select-border-error` | `var(--color-border-critical)` | `#FF001F` | エラーボーダー |
+| `--select-bg` | `var(--color-bg-default)` | `#FFFFFF` | デフォルト背景 |
+| `--select-bg-error` | `var(--red-50)` | `#FFF0F2` | エラー背景 |
+| `--select-bg-disabled` | `var(--color-bg-tertiary)` | `#F7F7F8` | 無効背景 |
+| `--select-focus-ring` | `var(--brand-200)` | `#C4CAFF` | フォーカスリング |
+| `--select-chevron` | `var(--color-icon-secondary)` | `#94939D` | Chevron アイコン色 |
+| `--select-border-width` | `var(--border-width-sm)` | `1px` | ボーダー幅 |
+
+### CSS Custom Properties
+
+```css
+.select-trigger {
+  position: relative;
+  height: var(--select-height);
+  padding: 0 var(--select-padding-right) 0 var(--select-padding-left);
+  background: var(--select-bg);
+  border: var(--select-border-width) solid var(--select-border);
+  border-radius: var(--select-radius);
+  color: var(--color-text-default);
+  font: var(--font-weight-regular) var(--font-size-md) / 1.5 var(--font-family);
+  cursor: pointer;
+}
+
+.select-trigger:focus-visible {
+  border-color: var(--select-border-focus);
+  outline: 2px solid var(--select-focus-ring);
+  outline-offset: 2px;
+}
+
+.select-trigger[aria-invalid="true"] {
+  border-color: var(--select-border-error);
+  background: var(--select-bg-error);
+}
+
+.select-trigger:disabled {
+  background: var(--select-bg-disabled);
+  color: var(--color-text-disabled);
+  border: none;
+  pointer-events: none;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--select-chevron);
+  pointer-events: none;
+}
+```
+
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| Default | グレーボーダー border-default (`#DADADD`)、プレースホルダーテキスト、Chevron | `aria-expanded="false"` |
+| Edit | グレーボーダー、選択済みテキスト | — |
+| Focus | border-emphasis (`#5538EE`) ボーダー + 2px Brand/200 フォーカスリング | `aria-expanded="true"` |
+| Error | border-critical (`#FF001F`) ボーダー、ピンク背景 `#FFF0F2`、赤エラーテキスト | `aria-invalid="true"` |
+| Error Edit | border-critical ボーダー、ピンク背景、選択済みテキスト + 赤エラーテキスト | `aria-invalid="true"` |
+| Disabled | bg-tertiary (`#F7F7F8`) 背景、グレーテキスト、操作不可 | `aria-disabled="true"` |
 
 ---
 
@@ -164,56 +190,47 @@ interface SelectOption<T = string> {
 
 | Attribute | Value | Condition |
 |-----------|-------|-----------|
-| `role` | `combobox` | searchable時 / `listbox` otherwise |
 | `aria-expanded` | `true/false` | ドロップダウン開閉 |
 | `aria-haspopup` | `listbox` | 常時 |
-| `aria-activedescendant` | option id | キーボードナビゲーション中 |
-| `aria-selected` | `true` | 選択済みoption |
-| `aria-multiselectable` | `true` | multi mode |
+| `aria-invalid` | `true` | Error / Error Edit 時 |
+| `aria-disabled` | `true` | disabled 時 |
+| `aria-describedby` | エラー/説明テキストID | Error Text または Description 表示時 |
 
 ### Keyboard
 
 | Key | Action |
 |-----|--------|
 | `Enter` / `Space` | ドロップダウン開閉 / 選択肢決定 |
-| `↑` / `↓` | 選択肢間の移動 |
-| `Home` / `End` | 最初/最後の選択肢に移動 |
+| `ArrowUp` / `ArrowDown` | 選択肢間の移動 |
 | `Escape` | ドロップダウンを閉じる |
-| 英数字 | searchable時: フィルタ入力 / 非searchable時: 先頭一致ジャンプ |
+| `Tab` | 次の要素へフォーカス移動 |
 
-### Focus Management
-- ドロップダウン開時: 検索入力 or 最初の選択肢にフォーカス
-- 選択肢決定後: single → ドロップダウン閉じてトリガーにフォーカス戻す / multi → 開いたまま
-- Escape: ドロップダウン閉じてトリガーにフォーカス戻す
+### Color Contrast
+
+- 入力テキスト Black/950 on 白背景 — 4.5:1 以上
+- エラーテキスト Red/700 on Red/50 — 4.5:1 以上
+- Chevron icon-secondary on 白背景 — 3:1 以上 (非テキスト要素)
 
 ---
 
 ## Do / Don't
 
 ### Do
-- ✅ 選択肢が5個以下ならRadioButtonを検討 → 全選択肢が一覧できる
-- ✅ 選択肢が10個以上なら `isSearchable` を有効化 → 目的の選択肢を見つけやすい
-- ✅ プレースホルダーに「選択してください」を使う → 操作の指示
-- ✅ グループ化で選択肢を整理する → 大量の選択肢で見通し改善
+- 選択肢が5個以下なら RadioButton を検討
+- 選択肢が10個以上なら検索機能を有効化
+- プレースホルダーに「選択してください」を使う
 
 ### Don't
-- ❌ 2択にSelectを使わない → Toggle/Switchを使う
-- ❌ 選択肢の動的変更を頻繁にしない → ユーザーが混乱する
-- ❌ 長いラベルでトリガー幅を圧迫しない → `text-overflow: ellipsis` で対応
+- 2択に Select を使わない (Switch を使う)
+- 長いラベルでトリガー幅を圧迫しない
 
 ---
 
 ## Related
 
-### Similar Components
-
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|
 | Select | 6個以上の排他選択 | 自由入力が必要 |
 | RadioGroup | 2-5個の排他選択 | 選択肢が多い |
-| Combobox | 選択肢+自由入力 | 選択肢のみで十分 |
-| Checkbox Group | 複数選択（少数） | 選択肢が多い |
-
-### Composition Patterns
-- → `vision/references/patterns/search-filter.md` — フィルタ条件としての使用
-- → `vision/references/patterns/form-wizard.md` — フォームステップ内での配置
+| Select Oneline | シンプルな選択 (ブラウザネイティブ) | 検索・フィルタが必要 |
+| TextField | 自由テキスト入力 | 定義済み選択肢 |

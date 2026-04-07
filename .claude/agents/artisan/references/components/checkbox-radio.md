@@ -1,114 +1,65 @@
-# Checkbox & Radio Button
+# Checkbox
 
 ## Overview
 
 | 項目 | 値 |
 |------|-----|
-| Name | Checkbox / RadioButton |
-| Description | 選択肢の選択・切替を行うフォーム要素 |
+| Name | Checkbox |
+| Description | 選択肢の選択・切替を行うフォーム要素。複数選択 (0個以上) に使用する |
+| Figma Source | Luna DS v3 / Checkbox |
 | Layer | Atom |
 | Category | Form |
 | Status | Stable |
 
-**2つのコンポーネントを1仕様にまとめる理由:** Anatomy・States・Accessibilityの構造が共通。差異はセクション内で明記。
+> **Note:** Radio ボタンは排他選択用の別コンポーネント。このファイルは Checkbox のみを定義する。
 
 ---
 
 ## Anatomy
 
 ```
-Checkbox:
-┌────┐
-│ [1]│ [2]Label  [3]Helper Text
-└────┘
-
-Radio:
-┌────┐
-│ [1]│ [2]Label  [3]Helper Text
-└────┘
-
-Group:
-[4]Group Label
-  ┌────┐
-  │ ○  │ Option A
-  └────┘
-  ┌────┐
-  │ ○  │ Option B
-  └────┘
-  [5]Error Message
+┌─ Checkbox ─────────────────────────────────────┐
+│                                                │
+│  ┌──────┐                                      │
+│  │ [1]  │  [2] Label Text                      │
+│  │ Box  │  [3] Description (optional)          │
+│  └──────┘                                      │
+│                                                │
+└────────────────────────────────────────────────┘
 ```
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
-| 1 | Control | Required | チェックボックス□ / ラジオ○ |
+| 1 | Checkbox Box | Required | チェックボックス本体 (正方形) |
 | 2 | Label | Required | 選択肢の説明テキスト |
-| 3 | Helper Text | Optional | 補足情報 |
-| 4 | Group Label | Required (Group) | グループ全体の説明 |
-| 5 | Error Message | Conditional | バリデーションエラー |
+| 3 | Description | Optional | ラベルの補足説明 |
 
 ---
 
 ## Props / API
 
 ```typescript
-// 単体
 interface CheckboxProps {
-  /** チェック状態 */
-  isChecked?: boolean;
-  /** 不確定状態（親Checkbox用） */
-  isIndeterminate?: boolean;
-  /** ラベル */
+  /** チェック状態 (制御コンポーネント) */
+  checked?: boolean;
+  /** 初期チェック状態 */
+  defaultChecked?: boolean;
+  /** 不確定状態 (親チェックボックス用) */
+  indeterminate?: boolean;
+  /** 無効状態 */
+  disabled?: boolean;
+  /** エラー状態 */
+  error?: boolean;
+  /** ラベルテキスト */
   label: string;
-  /** ヘルパーテキスト */
-  helperText?: string;
-  /** 無効 */
-  isDisabled?: boolean;
-  /** エラー */
-  isInvalid?: boolean;
-  /** 値 */
+  /** 補足説明 */
+  description?: string;
+  /** 状態変更コールバック */
+  onCheckedChange?: (checked: boolean) => void;
+  /** フォームフィールド名 */
+  name?: string;
+  /** フォーム値 */
   value?: string;
-  /** 変更ハンドラ */
-  onChange?: (checked: boolean) => void;
-}
-
-interface RadioProps {
-  /** ラベル */
-  label: string;
-  /** ヘルパーテキスト */
-  helperText?: string;
-  /** 無効 */
-  isDisabled?: boolean;
-  /** 値 */
-  value: string;
-}
-
-// グループ
-interface CheckboxGroupProps {
-  /** グループラベル */
-  label: string;
-  /** 選択値（複数） */
-  values?: string[];
-  /** 選択肢 */
-  options: { value: string; label: string; helperText?: string; isDisabled?: boolean }[];
-  /** 方向 */
-  orientation?: 'vertical' | 'horizontal';
-  /** 変更ハンドラ */
-  onChange?: (values: string[]) => void;
-}
-
-interface RadioGroupProps {
-  /** グループラベル */
-  label: string;
-  /** 選択値（1つ） */
-  value?: string;
-  /** 選択肢 */
-  options: { value: string; label: string; helperText?: string; isDisabled?: boolean }[];
-  /** 方向 */
-  orientation?: 'vertical' | 'horizontal';
-  /** 必須 */
-  isRequired?: boolean;
-  /** 変更ハンドラ */
-  onChange?: (value: string) => void;
 }
 ```
 
@@ -116,42 +67,66 @@ interface RadioGroupProps {
 
 ## Variants
 
-### Size
-
-| Size | Control Size | Font Size | Gap (control-label) | Use Case |
-|------|-------------|-----------|---------------------|----------|
-| sm | 16px | 14px | 8px | コンパクトリスト |
-| md | 20px | 16px | 10px | 標準フォーム |
-| lg | 24px | 18px | 12px | モバイル |
-
-### Orientation
-
-| Orientation | Layout | Use Case |
-|-------------|--------|----------|
-| vertical | 縦並び（デフォルト） | 3個以上、ラベルが長い |
-| horizontal | 横並び | 2-3個、ラベルが短い |
-
-### Checkbox固有: Indeterminate
-
-- 子Checkboxの一部のみ選択時、親Checkboxに表示
-- `isIndeterminate=true`: □に「−」マーク
-- クリックで全選択 → 全解除のトグル
+| Variant Axis | Values |
+|--------------|--------|
+| Status | Enable, Error, Disabled |
+| Active | off (unchecked), on (checked), indeterminate |
 
 ---
 
-## States
+## Size Specifications
 
-| State | Checkbox Visual | Radio Visual | ARIA |
-|-------|----------------|-------------|------|
-| default (unchecked) | 空の□ | 空の○ | — |
-| hover | border色変化 | border色変化 | — |
-| checked | ✓入り□、bg: primary | ●入り○、bg: primary | `aria-checked="true"` |
-| indeterminate | −入り□ | N/A | `aria-checked="mixed"` |
-| focus | focus-ring | focus-ring | — |
-| disabled | opacity: 0.4 | opacity: 0.4 | `aria-disabled="true"` |
-| disabled + checked | ✓入り、opacity: 0.4 | ●入り、opacity: 0.4 | `aria-disabled="true"`, `aria-checked="true"` |
-| error (unchecked) | border: `var(--color-border-critical)` Red、コントロール背景は白 | border: `var(--color-border-critical)` Red、コントロール背景は白 | `aria-invalid="true"` |
-| error (checked) | ✓入り□、bg: `var(--color-bg-critical)` Red、border: Red | ●入り○、bg: `var(--color-bg-critical)` Red、border: Red | `aria-invalid="true"`, `aria-checked="true"` |
+| Property | Value |
+|----------|-------|
+| Box Size | 20px x 20px |
+| Touch Target | 44px x 44px (minimum) |
+| Border Radius | radius-xs (4px) |
+| Border Width | border-width-sm (1px) — unchecked / border-width-md (2px) — focus ring |
+| Icon Size (check/minus) | 14px |
+| Gap (box - label) | space-sm (8px) |
+| Label Font | Body/md-default (14px / Regular) |
+| Description Font | Body/sm-default (12px / Regular) |
+
+---
+
+## Token Mapping per State
+
+### Unchecked States
+
+| State | Border | Fill | Label Color |
+|-------|--------|------|-------------|
+| Default | border-default `#DADADD` | transparent | text-default `#27272A` |
+| Hover | Black/400 `#94939D` | bg-interactive `#EFEEF0` | text-default `#27272A` |
+| Focus | border-emphasis `#5538EE` + focus ring | transparent | text-default `#27272A` |
+| Error | border-critical `#FF001F` | transparent | text-default `#27272A` |
+| Disabled | bg-disabled `#DADADD` | bg-disabled `#DADADD` | text-disabled `#94939D` |
+
+### Checked States
+
+| State | Border | Fill | Icon | Label Color |
+|-------|--------|------|------|-------------|
+| Default | Brand/600 `#5538EE` | Brand/600 `#5538EE` | White check | text-default `#27272A` |
+| Hover | Brand/700 `#4D2FD3` | Brand/700 `#4D2FD3` | White check | text-default `#27272A` |
+| Focus | Brand/600 `#5538EE` + focus ring | Brand/600 `#5538EE` | White check | text-default `#27272A` |
+| Error | Red/600 `#FF001F` | Red/600 `#FF001F` | White check | text-default `#27272A` |
+| Disabled | bg-disabled `#DADADD` | bg-disabled `#DADADD` | icon-disabled `#DADADD` | text-disabled `#94939D` |
+
+### Indeterminate State
+
+| State | Border | Fill | Icon | Label Color |
+|-------|--------|------|------|-------------|
+| Default | Brand/600 `#5538EE` | Brand/600 `#5538EE` | White minus `−` | text-default `#27272A` |
+| Hover | Brand/700 `#4D2FD3` | Brand/700 `#4D2FD3` | White minus `−` | text-default `#27272A` |
+| Disabled | bg-disabled `#DADADD` | bg-disabled `#DADADD` | icon-disabled `#DADADD` | text-disabled `#94939D` |
+
+### Focus Ring
+
+| Property | Value |
+|----------|-------|
+| Width | 2px |
+| Color | Brand/200 `#C4CAFF` |
+| Offset | 2px |
+| Trigger | `:focus-visible` のみ (マウスクリックでは非表示) |
 
 ---
 
@@ -161,17 +136,73 @@ interface RadioGroupProps {
 
 | Token | DS v3 Reference | Resolved Value | Usage |
 |-------|----------------|----------------|-------|
-| `--checkbox-border` | `var(--color-border-default)` | Black/200 `#DADADD` | 未チェック時ボーダー |
-| `--checkbox-checked-bg` | `var(--color-bg-emphasis)` | Brand/600 `#5538EE` | チェック時背景 |
-| `--checkbox-checked-icon` | `var(--color-icon-inverse)` | Black/0 `#FFFFFF` | ✓/●の色 |
-| `--checkbox-label-text` | `var(--color-text-default)` | Black/950 `#27272A` | ラベルテキスト |
-| `--checkbox-disabled-bg` | `var(--color-bg-disabled)` | Black/200 `#DADADD` | 無効背景 |
-| `--checkbox-error-border` | `var(--color-border-critical)` | Red/600 `#FF001F` | エラー時ボーダー |
-| `--checkbox-error-checked-bg` | `var(--color-bg-critical)` | Red/600 `#FF001F` | エラー+チェック時背景 |
-| `--checkbox-radius` | `var(--radius-sm)` | `8px` | Checkbox角丸 |
-| `--radio-radius` | `var(--radius-full)` | `9999px` | Radio角丸（円形） |
-| `--checkbox-label-gap` | `var(--space-sm)` | `8px` | コントロール-ラベル間 |
-| `--checkbox-group-gap` | `var(--space-md)` | `12px` | 選択肢間の余白 |
+| `--checkbox-size` | — | `20px` | ボックスサイズ |
+| `--checkbox-radius` | `var(--radius-xs)` | `4px` | 角丸 |
+| `--checkbox-border` | `var(--color-border-default)` | `#DADADD` | 未チェック時ボーダー |
+| `--checkbox-checked-bg` | `var(--color-bg-emphasis)` | `#5538EE` | チェック済み背景 |
+| `--checkbox-checked-hover` | `var(--color-bg-emphasis-interactive)` | `#4D2FD3` | チェック済みホバー |
+| `--checkbox-error-border` | `var(--color-border-critical)` | `#FF001F` | エラー時ボーダー |
+| `--checkbox-disabled-bg` | `var(--color-bg-disabled)` | `#DADADD` | 無効時背景 |
+| `--checkbox-focus-ring` | `var(--brand-200)` | `#C4CAFF` | フォーカスリング |
+| `--checkbox-icon-color` | `var(--color-icon-inverse)` | `#FFFFFF` | チェックマーク色 |
+| `--checkbox-label-gap` | `var(--space-sm)` | `8px` | ボックス-ラベル間 |
+
+### CSS Custom Properties
+
+```css
+.checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--checkbox-label-gap);
+  cursor: pointer;
+}
+
+.checkbox__box {
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  min-width: var(--checkbox-size);
+  border: var(--border-width-sm) solid var(--checkbox-border);
+  border-radius: var(--checkbox-radius);
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.checkbox__box:focus-visible {
+  outline: 2px solid var(--checkbox-focus-ring);
+  outline-offset: 2px;
+}
+
+.checkbox[data-state="checked"] .checkbox__box,
+.checkbox[data-state="indeterminate"] .checkbox__box {
+  background: var(--checkbox-checked-bg);
+  border-color: var(--checkbox-checked-bg);
+}
+
+.checkbox[data-disabled] {
+  pointer-events: none;
+}
+
+.checkbox[data-disabled] .checkbox__box {
+  background: var(--checkbox-disabled-bg);
+  border-color: var(--checkbox-disabled-bg);
+}
+```
+
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| Unchecked | グレーボーダーの空チェックボックス | `aria-checked="false"` |
+| Checked | Brand/600 背景に白チェックマーク | `aria-checked="true"` |
+| Indeterminate | Brand/600 背景に白マイナスアイコン | `aria-checked="mixed"` |
+| Hover (unchecked) | bg-interactive 背景、ボーダー Black/400 | — |
+| Hover (checked) | Brand/700 背景 | — |
+| Focus | 2px Brand/200 フォーカスリング, 2px offset | — |
+| Error Unchecked | 赤ボーダーの空チェックボックス | `aria-invalid="true"`, `aria-checked="false"` |
+| Error Checked | 赤背景に白チェックマーク | `aria-invalid="true"`, `aria-checked="true"` |
+| Disabled Unchecked | bg-disabled 背景/ボーダー、操作不可 | `aria-disabled="true"`, `aria-checked="false"` |
+| Disabled Checked | bg-disabled 背景、icon-disabled チェック、操作不可 | `aria-disabled="true"`, `aria-checked="true"` |
 
 ---
 
@@ -179,63 +210,56 @@ interface RadioGroupProps {
 
 ### ARIA
 
-| Attribute | Element | Value |
-|-----------|---------|-------|
-| `role` | Checkbox Group | `group` |
-| `role` | Radio Group | `radiogroup` |
-| `aria-checked` | Checkbox | `true` / `false` / `mixed` |
-| `aria-checked` | Radio | `true` / `false` |
-| `aria-labelledby` | Group | Group Labelのid |
-| `aria-required` | Group | `true`（必須時） |
-| `aria-invalid` | Group | `true`（エラー時） |
+| Attribute | Value | Condition |
+|-----------|-------|-----------|
+| `role` | `checkbox` | ネイティブ `<input type="checkbox">` 以外の場合 |
+| `aria-checked` | `true` / `false` / `mixed` | チェック状態 |
+| `aria-invalid` | `true` | Error Status 時 |
+| `aria-disabled` | `true` | Disabled 時 |
+| `aria-describedby` | description 要素の id | Description 表示時 |
 
 ### Keyboard
 
-**Checkbox:**
 | Key | Action |
 |-----|--------|
 | `Space` | チェック/アンチェック切替 |
 | `Tab` | 次の要素へフォーカス移動 |
+| `Shift+Tab` | 前の要素へフォーカス移動 |
 
-**Radio:**
-| Key | Action |
-|-----|--------|
-| `↑` / `←` | 前のラジオへ移動（ループ） |
-| `↓` / `→` | 次のラジオへ移動（ループ） |
-| `Space` | 現在のラジオを選択 |
-| `Tab` | グループ外へフォーカス移動 |
+### Color Contrast
 
-**重要な違い:** CheckboxはTab移動、Radioは矢印キー移動（`radiogroup`のネイティブ挙動）。
+- Checked: 白チェックマーク on Brand/600 `#5538EE` — 5.8:1 以上
+- Error Checked: 白チェックマーク on Red/600 `#FF001F` — 4.5:1 以上
+- Disabled: コントラスト要件なし (WCAG では disabled 要素は除外)
 
 ---
 
 ## Do / Don't
 
 ### Do
-- ✅ Checkboxは独立した選択に使う（0個以上選択可能） → 複数選択の自由度
-- ✅ Radioは排他的選択に使う（必ず1つ選択） → 明確な択一
-- ✅ ラベルのクリックでも状態変更 → タッチターゲット拡大
-- ✅ RadioGroupにはデフォルト選択を設定 → ユーザーの意思決定を支援
+- Checkbox は独立した選択に使う (0個以上選択可能)
+- ラベルのクリックでも状態変更できるようにする
+- エラー時は border-critical で視覚的に示し、エラーメッセージも表示する
+- グループ内の一部選択時は親チェックボックスに indeterminate を使う
+- touch target は最低 44px を確保する
 
 ### Don't
-- ❌ 単独のRadioは使わない → 必ず2つ以上のRadioGroupで使用
-- ❌ ON/OFFの切替にCheckboxを使わない → Toggle/Switchを使う
-- ❌ 6個以上の選択肢にRadio/Checkboxを使わない → Select/MultiSelectを検討
-- ❌ ラベルなしで使わない → 何を選択しているか不明になる
+- ON/OFF の即時反映切替に Checkbox を使わない (Switch を使う)
+- ラベルなしで使わない
+- 排他的選択に Checkbox を使わない (Radio を使う)
+- disabled 状態で重要な情報を隠さない
 
 ---
 
 ## Related
 
-### Similar Components
-
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|
-| Checkbox | 複数選択（0個以上） | 排他的選択 |
-| Radio | 排他的選択（2-5個） | 複数選択が必要 |
-| Toggle/Switch | ON/OFF即時反映 | フォーム送信時に反映 |
-| Select (multi) | 多数の選択肢から複数選択 | 選択肢が少ない |
+| Checkbox | 複数選択 (0個以上) | 排他的選択 |
+| Radio | 排他的選択 (1つだけ) | 複数選択 |
+| Switch | ON/OFF 即時反映 | フォーム送信時に反映 |
+| Select Button | カード型の視覚的選択 | 標準フォーム内 |
 
 ### Composition Patterns
-- → `vision/references/patterns/form-wizard.md` — フォームステップ内での配置
-- → `vision/references/patterns/search-filter.md` — フィルタ条件としての使用
+- Field でラップすることでラベル + エラーメッセージ付きフォーム要素として使用可
+- CheckboxGroup でグループ化し、indeterminate 親チェックボックスと組み合わせ可能

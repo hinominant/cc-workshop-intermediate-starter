@@ -6,20 +6,18 @@
 |------|-----|
 | Name | Avatar |
 | Description | ユーザーのプロフィール画像またはイニシャルを表示するコンポーネント |
+| Figma Source | Luna DS v3 / Avatar |
 | Layer | Atom |
 | Category | Display |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Variants
 
-```
-┌──────┐        ┌──────┐        ┌──────┐
-│  👤  │   or   │  KG  │   or   │ img  │
-└──────┘        └──────┘        └──────┘
- fallback icon   initials      photo
-```
+### Content Priority
+
+**優先順位:** Image → Initials → Fallback Icon
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
@@ -27,47 +25,6 @@
 | 2 | Initials | Optional | 画像未設定時のイニシャルテキスト（1〜2文字） |
 | 3 | Fallback Icon | Optional | イニシャルも未設定時のデフォルトアイコン |
 | 4 | Badge（Status Dot） | Optional | オンライン状態等を示す小点 |
-
-**優先順位:** Image → Initials → Fallback Icon
-
----
-
-## Props / API
-
-```typescript
-interface AvatarProps {
-  /** 画像URL */
-  src?: string;
-  /** 代替テキスト（スクリーンリーダー用） */
-  alt?: string;
-  /** ユーザー名（イニシャル生成に使用） */
-  name?: string;
-  /** サイズ */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  /** ステータスドット */
-  status?: 'online' | 'offline' | 'away' | 'busy';
-  /** カスタム背景色（イニシャル表示時） */
-  color?: string;
-  /** 形状 */
-  shape?: 'circle' | 'square';
-}
-
-/** アバターグループ */
-interface AvatarGroupProps {
-  /** 表示するアバターのリスト */
-  avatars: AvatarProps[];
-  /** 最大表示数 */
-  max?: number;
-  /** オーバーフロー時の表示（「+N」） */
-  size?: AvatarProps['size'];
-}
-```
-
-**デフォルト値:** `size='md'`, `shape='circle'`, `max=3`
-
----
-
-## Variants
 
 ### Size
 
@@ -78,6 +35,13 @@ interface AvatarGroupProps {
 | md | 40px | 14px | 20px |
 | lg | 48px | 16px | 24px |
 | xl | 64px | 20px | 32px |
+
+### Shape
+
+| Shape | Radius |
+|-------|--------|
+| circle | 50% |
+| square | `radius-sm` (4px) |
 
 ### Initials カラーパレット（name ハッシュで自動割り当て）
 
@@ -102,44 +66,53 @@ interface AvatarGroupProps {
 
 ### AvatarGroup
 
-```
-┌────┐
-│ 👤 │
-└──┬─┘
-   ┌────┐
-   │ KG │
-   └──┬─┘
-      ┌────┐
-      │ +3 │
-      └────┘
-```
-
 - 重なり幅: アバターサイズの `-25%`
 - オーバーフロー: `+N` を最後に表示（同スタイル、`bg-tertiary`背景）
+- デフォルト `max=3`
+
+---
+
+## Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| src | `string` | — | 画像URL |
+| alt | `string` | — | 代替テキスト（スクリーンリーダー用） |
+| name | `string` | — | ユーザー名（イニシャル生成に使用） |
+| size | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | サイズ |
+| status | `'online' \| 'offline' \| 'away' \| 'busy'` | — | ステータスドット |
+| color | `string` | — | カスタム背景色（イニシャル表示時） |
+| shape | `'circle' \| 'square'` | `'circle'` | 形状 |
+
+### AvatarGroup Props
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| avatars | `AvatarProps[]` | — | 表示するアバターのリスト |
+| max | `number` | `3` | 最大表示数 |
+| size | `AvatarProps['size']` | — | アバターサイズ |
+
+---
+
+## Token Mapping
+
+| Element | Token | Value |
+|---------|-------|-------|
+| デフォルト背景 | `bg-tertiary` | `#F7F7F8` (Black/50) |
+| 円形 radius | — | `50%` |
+| 四角形 radius | `radius-sm` | 4px |
+| イニシャル font-weight | — | 600 |
+| md サイズ | — | 40px |
 
 ---
 
 ## States
 
-| State | Visual Change |
-|-------|--------------|
-| default | 通常表示 |
-| image-error | 画像読み込み失敗 → Initials / Fallback Iconにフォールバック |
-| loading | Skeleton（`bg-interactive` でパルスアニメーション） |
-
----
-
-## Design Tokens
-
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
-
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--avatar-size-md` | — | `40px` | mdサイズ |
-| `--avatar-radius-circle` | `50%` | `50%` | 円形 |
-| `--avatar-radius-square` | `var(--radius-sm)` | `4px` | 四角形 |
-| `--avatar-bg-fallback` | `var(--color-bg-tertiary)` | `#F7F7F8` | デフォルト背景 |
-| `--avatar-font-weight` | — | `600` | イニシャルウェイト |
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| default | 通常表示 | — |
+| image-error | 画像読み込み失敗 → Initials / Fallback Iconにフォールバック | — |
+| loading | Skeleton（`bg-interactive` でパルスアニメーション） | — |
 
 ---
 
@@ -147,34 +120,40 @@ interface AvatarGroupProps {
 
 ### ARIA
 
-| Attribute | Value | 付与先 |
-|-----------|-------|--------|
-| `role` | `img` | Avatarコンテナ（画像なしの場合） |
+| Attribute | Value | Condition |
+|-----------|-------|-----------|
+| `role` | `img` | 画像なしの場合 |
 | `aria-label` | `"{name}のアバター"` | Avatarコンテナ |
 | `alt` | `"{name}"` | img要素 |
 
 - 装飾目的のアバター: `aria-hidden="true"` + `alt=""`
 - ユーザー識別に使うアバター: `aria-label` または `alt` でユーザー名を伝える
 
+### Keyboard
+
+- アバター単体はフォーカス不可（親要素 Button/Link でラップする）
+
 ---
 
 ## Do / Don't
 
 ### Do
-- ✅ `name` propを常に渡す → イニシャル生成・スクリーンリーダー対応の両方に必要
-- ✅ 画像ロードエラー時のフォールバックを必ず実装する
-- ✅ AvatarGroupはリスト形式で実装（`aria-label` で「Nユーザー」を伝える）
+- `name` propを常に渡す → イニシャル生成・スクリーンリーダー対応の両方に必要
+- 画像ロードエラー時のフォールバックを必ず実装する
+- AvatarGroupはリスト形式で実装（`aria-label` で「Nユーザー」を伝える）
 
 ### Don't
-- ❌ アバター単体にクリックイベントを持たせない → 親要素（Button, Link）でラップ
-- ❌ xl以上の大きいサイズをリスト内に使わない → プロフィールページ等の単体表示用
-- ❌ ステータスドットの色だけで状態を伝えない → `aria-label` に状態テキストも含める
+- アバター単体にクリックイベントを持たせない → 親要素（Button, Link）でラップ
+- xl以上の大きいサイズをリスト内に使わない → プロフィールページ等の単体表示用
+- ステータスドットの色だけで状態を伝えない → `aria-label` に状態テキストも含める
 
 ---
 
 ## Related
 
-### Composition Patterns
-- → `artisan/references/components/menu.md` — アバタークリックでメニュー展開
-- → `artisan/references/components/header.md` — ヘッダー右端のユーザーアバター
-- → `artisan/references/components/table.md` — ユーザー列でのアバター表示
+| Component | Use When | Don't Use When |
+|-----------|----------|---------------|
+| Avatar | ユーザー識別の画像/イニシャル表示 | 装飾的な画像表示 |
+| Menu | アバタークリックでメニュー展開 | — |
+| Header | ヘッダー右端のユーザーアバター | — |
+| Table | ユーザー列でのアバター表示 | — |

@@ -6,93 +6,76 @@
 |------|-----|
 | Name | Global Navigation |
 | Description | アプリ下部のメインナビゲーションバー |
+| Figma Source | Luna DS v3 / Global Navigation |
 | Layer | Organism |
 | Category | Navigation |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Figma Variants
 
-```
-┌───────────────────────────────────────────────────────┐
-│  [1]Tab   [2]Tab   [3]Tab   [4]Tab   [5]Tab          │
-│  ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐           │
-│  │Icon │ │Icon●│ │Icon●│ │Icon●│ │Icon │           │
-│  │Label│ │Label│ │Label│ │Label│ │Label│           │
-│  └─────┘ └─────┘ └─────┘ └─────┘ └─────┘           │
-└───────────────────────────────────────────────────────┘
- ● = 通知バッジ（赤ドット）
-```
-
-| # | Part | Required | Description |
-|----|------|----------|-------------|
-| 1 | さがす (Search) | Required | 検索画面へのナビゲーション |
-| 2 | イベント (Event) | Required | イベント画面。通知バッジ表示可能 |
-| 3 | 相手から (From others) | Required | 相手からのアクション一覧。通知バッジ表示可能 |
-| 4 | メッセージ (Message) | Required | メッセージ画面。通知バッジ表示可能 |
-| 5 | マイページ (MyPage) | Required | マイページ画面 |
+Button variants: icon + label items
 
 ---
 
-## Props / API
+## Props
 
-```typescript
-interface GlobalNavigationProps {
-  /** 現在アクティブなタブ */
-  activeTab: 'search' | 'event' | 'from-others' | 'message' | 'mypage';
-  /** 通知バッジの表示制御 */
-  badges?: {
-    event?: boolean;
-    fromOthers?: boolean;
-    message?: boolean;
-  };
-  /** タブ切り替えハンドラ */
-  onTabChange?: (tab: string) => void;
-}
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| Active Tab | Enum | アクティブなタブ |
+| Tab Items | Instance | アイコン + ラベルの各タブ項目 |
 
 ---
 
-## Variants
+## Token Mapping
 
-### タブ状態
+### Container
 
-| Variant | Icon | Label | Description |
-|---------|------|-------|-------------|
-| 通常（非選択） | アウトラインアイコン | 通常ウェイト、secondary text | デフォルト状態 |
-| 選択時 | 塗りアイコン（filled） | 太字、emphasis text | アクティブタブ |
+| Property | Value | Description |
+|----------|-------|-------------|
+| Background | bg-default (`#FFFFFF`) | ナビゲーション背景 |
+| Radius | 12px | コンテナ角丸 |
 
-### 通知バッジ
+### Button
 
-- 赤ドット（直径 8px）をアイコン右上に表示
-- イベント、相手から、メッセージタブに表示可能
+| Property | Value | Description |
+|----------|-------|-------------|
+| Radius | 12px | ボタン角丸 |
+| Padding | 6/0 (top-bottom/left-right) | ボタン内余白 |
+
+### Active Tab
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Color | text-emphasis (`#5538EE`) | アクティブタブの色 |
+
+### Inactive Tab
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Color | Secondary text color | 非アクティブタブの色 |
+
+---
+
+## Size Specifications
+
+| Property | Value |
+|----------|-------|
+| Container Radius | 12px |
+| Button Radius | 12px |
+| Button Padding | 6/0 |
+| Active Color | text-emphasis (`#5538EE`) |
 
 ---
 
 ## States
 
-| State | Visual Change | CSS | ARIA |
-|-------|--------------|-----|------|
-| default | アウトラインアイコン + secondary テキスト | — | — |
-| active | 塗りアイコン + 太字テキスト | `font-weight: 700; color: var(--color-text-default)` | `aria-current="page"` |
-| badge | 赤ドットバッジ表示 | — | `aria-label` に通知数を含める |
-
----
-
-## Design Tokens
-
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
-
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--gnav-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | ナビゲーション背景 |
-| `--gnav-border-top` | `var(--color-border-default)` | Black/200 `#DADADD` | 上ボーダー |
-| `--gnav-text-default` | `var(--color-text-secondary)` | Black/500 `#777681` | 非選択テキスト |
-| `--gnav-text-active` | `var(--color-text-default)` | Black/950 `#27272A` | 選択テキスト |
-| `--gnav-icon-default` | `var(--color-text-secondary)` | Black/500 `#777681` | 非選択アイコン |
-| `--gnav-icon-active` | `var(--color-text-default)` | Black/950 `#27272A` | 選択アイコン |
-| `--gnav-badge-bg` | `var(--color-bg-critical)` | Red/600 `#FF001F` | 通知バッジ背景 |
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| default (inactive) | アウトラインアイコン + secondary テキスト | --- |
+| active | 塗りアイコン + Brand/600 テキスト | `aria-current="page"` |
+| badge | 赤ドットバッジ表示 | `aria-label` に通知を含める |
 
 ---
 
@@ -113,11 +96,27 @@ interface GlobalNavigationProps {
 | `Tab` | タブ間のフォーカス移動 |
 | `Enter` / `Space` | タブの選択 |
 
+### Color Contrast
+
+- アクティブ: Brand/600 テキスト on 白背景 → 4.5:1 以上
+- 非アクティブ: Secondary テキスト on 白背景 → 4.5:1 以上
+
+---
+
+## Do / Don't
+
+### Do
+- アプリ全体のメインナビゲーションとして使用
+- 常に画面下部に固定配置
+- アクティブタブを Brand カラーで視覚的に示す
+
+### Don't
+- セクション内のサブナビゲーションに使わない
+- 6個以上のタブを配置しない
+
 ---
 
 ## Related
-
-### Similar Components
 
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|

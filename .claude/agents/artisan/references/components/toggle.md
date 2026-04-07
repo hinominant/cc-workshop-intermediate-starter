@@ -1,31 +1,33 @@
-# Toggle
+# Toggle Button
 
 ## Overview
 
 | 項目 | 値 |
 |------|-----|
-| Name | Toggle |
-| Description | ON/OFF の2値を即座に切り替えるスイッチ要素 |
+| Name | Toggle Button |
+| Description | 押下/非押下の2状態を持つアイコンボタン。ツールバーの書式設定 (Bold/Italic) やフィルター切替等に使用する |
+| Figma Source | — (shadcn/ui Toggle 準拠) |
 | Layer | Atom |
-| Category | Form |
+| Category | Action |
 | Status | Stable |
+
+> **Switch との違い:** Switch は ON/OFF のスライド型トグルスイッチ (設定変更用)。Toggle Button はツールバー等で押下状態を持つアイコンボタン。Figma の「Toggle」コンポーネントは Switch (`switch.md`) にマッピングされる。
 
 ---
 
 ## Anatomy
 
 ```
-┌──────────────────────┐
-│  [1]Track  [2]Thumb  │
-└──────────────────────┘
-[3]Label (外部)
+┌─ Toggle Button ─────┐
+│                     │
+│       [1]Icon       │
+│                     │
+└─────────────────────┘
 ```
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
-| 1 | Track | Required | スイッチの背景トラック（32px x 20px） |
-| 2 | Thumb | Required | スライドする円形ノブ（16px、白色） |
-| 3 | Label | Required* | トグルの用途を説明するテキスト。*非表示の場合は `aria-label` 必須 |
+| 1 | Icon | Required | Material Symbols Rounded アイコン (20px or 24px) |
 
 ---
 
@@ -33,64 +35,68 @@
 
 ```typescript
 interface ToggleProps {
-  /** ON/OFF 状態 */
-  isChecked?: boolean;
+  /** 押下状態 (制御コンポーネント) */
+  pressed?: boolean;
+  /** 初期押下状態 */
+  defaultPressed?: boolean;
+  /** 状態変更コールバック */
+  onPressedChange?: (pressed: boolean) => void;
   /** 無効状態 */
-  isDisabled?: boolean;
-  /** ラベルテキスト */
-  label?: string;
-  /** ラベル位置 */
-  labelPlacement?: 'left' | 'right';
-  /** 変更ハンドラ */
-  onChange?: (isChecked: boolean) => void;
-  /** aria-label（ラベル非表示時） */
-  'aria-label'?: string;
+  disabled?: boolean;
+  /** サイズ */
+  size?: 'sm' | 'md' | 'lg';
+  /** アクセシビリティラベル */
+  'aria-label': string;
+  /** アイコン */
+  icon: ReactNode;
 }
 ```
-
-**デフォルト値:** `isChecked=false`, `labelPlacement="right"`
 
 ---
 
 ## Variants
 
-### Status
+### Size
 
-| Status | Track Color | Thumb Position | Use Case |
-|--------|------------|----------------|----------|
-| on | `bg-emphasis` Brand/600 `#5538EE` | 右端（`align-items: flex-end`） | 機能が有効 |
-| off | `bg-disabled` Black/200 `#DADADD` | 左端（`align-items: flex-start`） | 機能が無効 |
-
-### Dimensions
-
-Figma定義は1サイズのみ:
-
-| Part | Property | Value |
-|------|----------|-------|
-| Track | 幅 | 32px |
-| Track | 高さ | 20px |
-| Track | 角丸 | `var(--radius-full)` = 9999px |
-| Track | padding | 2px (`var(--space-3xs)`) |
-| Thumb | サイズ | 16px x 16px |
-| Thumb | 角丸 | `var(--radius-full)` = 9999px |
-| Thumb | 背景色 | `var(--color-bg-default)` = `#FFFFFF` |
+| Size | Button Size | Icon Size | Use Case |
+|------|-------------|-----------|----------|
+| sm | 32px | 20px | コンパクトツールバー |
+| md | 40px | 20px | 標準ツールバー |
+| lg | 48px | 24px | タッチ向け |
 
 ---
 
-## States
+## Size Specifications
 
-| State | Visual Change | CSS | ARIA |
-|-------|--------------|-----|------|
-| off | Track: Black/200、Thumb: 左端 | `background: var(--color-bg-disabled)` | `aria-checked="false"` |
-| on | Track: Brand/600、Thumb: 右端 | `background: var(--color-bg-emphasis)` | `aria-checked="true"` |
-| hover | Track の明度変化 | `filter: brightness(0.9)` | — |
-| focus | focus-ring 表示 | `outline: 2px solid var(--color-focus-ring); outline-offset: 2px` | — |
-| disabled + off | opacity: 0.4, cursor: not-allowed | `opacity: 0.4; pointer-events: none` | `aria-disabled="true"`, `aria-checked="false"` |
-| disabled + on | opacity: 0.4, cursor: not-allowed | `opacity: 0.4; pointer-events: none` | `aria-disabled="true"`, `aria-checked="true"` |
+| Property | Value |
+|----------|-------|
+| Height / Width | sm: 32px / md: 40px / lg: 48px |
+| Icon Size | sm/md: 20px / lg: 24px |
+| Border Radius | radius-sm (8px) |
+| Border Width | none |
+| Touch Target | 44px minimum (sm は padding で確保) |
 
-**Thumb アニメーション**: `transition: transform 150ms ease` でスライド移動。
+---
 
-**focus-ring**: `:focus-visible` のみ。マウスクリックでは非表示。
+## Token Mapping per State
+
+| State | Background | Icon Color | Description |
+|-------|-----------|------------|-------------|
+| Default (unpressed) | transparent | icon-secondary `#94939D` | 非押下通常状態 |
+| Hover (unpressed) | bg-interactive `#EFEEF0` | icon-default `#27272A` | ホバー |
+| Pressed | bg-secondary `#EDEFFF` | icon-emphasis `#5538EE` | 押下状態 |
+| Hover (pressed) | Brand/100 `#DEE3FF` | icon-emphasis `#5538EE` | 押下中ホバー |
+| Focus | + focus ring | — (状態による) | フォーカス |
+| Disabled | transparent | icon-disabled `#DADADD` | 無効状態 |
+
+### Focus Ring
+
+| Property | Value |
+|----------|-------|
+| Width | 2px |
+| Color | Brand/200 `#C4CAFF` |
+| Offset | 2px |
+| Trigger | `:focus-visible` のみ |
 
 ---
 
@@ -100,17 +106,67 @@ Figma定義は1サイズのみ:
 
 | Token | DS v3 Reference | Resolved Value | Usage |
 |-------|----------------|----------------|-------|
-| `--toggle-track-width` | — | `32px` | トラック幅 |
-| `--toggle-track-height` | — | `20px` | トラック高さ |
-| `--toggle-track-on` | `var(--color-bg-emphasis)` | Brand/600 `#5538EE` | ON時トラック背景 |
-| `--toggle-track-off` | `var(--color-bg-disabled)` | Black/200 `#DADADD` | OFF時トラック背景 |
-| `--toggle-thumb-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | Thumb背景 |
-| `--toggle-thumb-size` | — | `16px` | Thumbサイズ |
-| `--toggle-track-radius` | `var(--radius-full)` | `9999px` | トラック角丸 |
-| `--toggle-thumb-radius` | `var(--radius-full)` | `9999px` | Thumb角丸 |
-| `--toggle-track-padding` | `var(--space-3xs)` | `2px` | トラック内パディング |
-| `--toggle-transition` | `150ms ease` | — | トランジション |
-| `--toggle-disabled-opacity` | — | `0.4` | 無効時透明度 |
+| `--toggle-bg` | `transparent` | — | デフォルト背景 |
+| `--toggle-bg-hover` | `var(--color-bg-interactive)` | `#EFEEF0` | ホバー背景 |
+| `--toggle-bg-pressed` | `var(--color-bg-secondary)` | `#EDEFFF` | 押下背景 |
+| `--toggle-icon` | `var(--color-icon-secondary)` | `#94939D` | デフォルトアイコン色 |
+| `--toggle-icon-pressed` | `var(--color-icon-emphasis)` | `#5538EE` | 押下アイコン色 |
+| `--toggle-icon-disabled` | `var(--color-icon-disabled)` | `#DADADD` | 無効アイコン色 |
+| `--toggle-radius` | `var(--radius-sm)` | `8px` | 角丸 |
+| `--toggle-focus-ring` | `var(--brand-200)` | `#C4CAFF` | フォーカスリング |
+
+### CSS Custom Properties
+
+```css
+.toggle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--toggle-bg);
+  border: none;
+  border-radius: var(--toggle-radius);
+  color: var(--toggle-icon);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.toggle-button:hover {
+  background: var(--toggle-bg-hover);
+  color: var(--color-icon-default);
+}
+
+.toggle-button[data-state="on"] {
+  background: var(--toggle-bg-pressed);
+  color: var(--toggle-icon-pressed);
+}
+
+.toggle-button[data-state="on"]:hover {
+  background: var(--brand-100);
+}
+
+.toggle-button:focus-visible {
+  outline: 2px solid var(--toggle-focus-ring);
+  outline-offset: 2px;
+}
+
+.toggle-button[data-disabled] {
+  color: var(--toggle-icon-disabled);
+  pointer-events: none;
+}
+```
+
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| Unpressed | transparent 背景、icon-secondary | `aria-pressed="false"` |
+| Pressed | bg-secondary 背景、icon-emphasis | `aria-pressed="true"` |
+| Hover (unpressed) | bg-interactive 背景 | — |
+| Hover (pressed) | Brand/100 背景 | — |
+| Focus | 2px Brand/200 フォーカスリング | — |
+| Disabled | icon-disabled, pointer-events: none | `aria-disabled="true"` |
 
 ---
 
@@ -120,53 +176,49 @@ Figma定義は1サイズのみ:
 
 | Attribute | Value | Condition |
 |-----------|-------|-----------|
-| `role` | `switch` | 常時 |
-| `aria-checked` | `true/false` | ON/OFF |
-| `aria-disabled` | `true` | isDisabled 時 |
-| `aria-label` | 操作説明 | ラベル非表示時 |
-| `aria-labelledby` | label の id | ラベル表示時 |
+| `role` | `button` | 常時 (ネイティブ button 使用推奨) |
+| `aria-pressed` | `true` / `false` | 押下状態 |
+| `aria-disabled` | `true` | disabled 時 |
+| `aria-label` | ボタンの説明 | 常時 (テキストラベルがないため必須) |
 
 ### Keyboard
 
 | Key | Action |
 |-----|--------|
-| `Space` | ON/OFF 切り替え |
-| `Enter` | ON/OFF 切り替え |
+| `Space` | 押下/非押下切り替え |
+| `Enter` | 押下/非押下切り替え |
 | `Tab` | 次の要素へフォーカス移動 |
 
 ### Color Contrast
-- ON Track (Brand/600 `#5538EE`) + 白 Thumb → 十分なコントラスト
-- OFF Track (Black/200 `#DADADD`) + 白 Thumb → 形状で区別（色のみに依存しない）
+
+- Unpressed: icon-secondary `#94939D` on white `#FFFFFF` — 3.5:1 (アイコンは 3:1 で WCAG AA 準拠)
+- Pressed: icon-emphasis `#5538EE` on bg-secondary `#EDEFFF` — 5.4:1
 
 ---
 
 ## Do / Don't
 
 ### Do
-- ✅ 即座に効果を反映する設定に使う → ページ保存不要の設定トグル
-- ✅ ラベルは現在の状態ではなく、機能の説明を記載 → 「通知を受け取る」（「通知ON」ではない）
-- ✅ ON/OFF の結果が明白な場合にのみ使用 → ユーザーが効果を予測できる
-- ✅ disabled時はtooltipで理由を表示 → ユーザーが解決策を理解できる
+- ツールバーでの書式設定ボタン (Bold, Italic, Underline) に使う
+- フィルターやビュー切替のトグルに使う
+- `aria-label` を必ず設定する (アイコンのみのため)
+- ToggleGroup でグループ化し、排他選択/複数選択を制御する
 
 ### Don't
-- ❌ フォーム送信が必要な設定にトグルを使わない → Checkbox + 送信ボタンを使う
-- ❌ ラベルなしで配置しない → スクリーンリーダーで操作内容が不明になる
-- ❌ 3つ以上の状態切り替えに使わない → SegmentedControl / Select を使う
-- ❌ トグルの初期状態をONにしない（ダークパターン） → ユーザーが意図的にONにすべき
+- ON/OFF 設定の切替には使わない (Switch を使う)
+- テキストラベル付きの切替には使わない (Switch を使う)
+- フォーム送信が必要な場合は Checkbox を使う
 
 ---
 
 ## Related
 
-### Similar Components
-
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|
-| Toggle | 即時反映の ON/OFF 切り替え | フォーム送信が必要 |
-| Checkbox | フォーム内の true/false 選択 | 即時反映が期待される |
-| RadioGroup | 3つ以上の排他選択 | 2値の切り替え |
-| Select Button | 選択肢の選択/解除 | 2値の切り替え |
+| Toggle Button | ツールバーの押下状態ボタン | 設定の ON/OFF |
+| Switch | 設定の ON/OFF 即時反映 | ツールバーボタン |
+| Checkbox | フォーム内の true/false 選択 | ツールバーアクション |
+| Button | 単発アクション (トグル状態なし) | 押下状態の保持が必要 |
 
 ### Composition Patterns
-- → `vision/references/patterns/settings-form.md` — 設定画面での通知トグル配置
-- → `vision/references/patterns/list-item-toggle.md` — リスト項目内の右端トグル
+- ToggleGroup: 複数の Toggle Button をグループ化。`type="single"` (排他) / `type="multiple"` (複数選択)

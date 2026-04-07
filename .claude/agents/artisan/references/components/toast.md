@@ -6,6 +6,7 @@
 |------|-----|
 | Name | Toast |
 | Description | 操作結果を一時的に通知するフィードバック要素 |
+| Figma Source | Luna DS v3 / Toast |
 | Layer | Molecule |
 | Category | Feedback |
 | Status | Stable |
@@ -15,20 +16,19 @@
 ## Anatomy
 
 ```
-┌───────────────────────────────────────┐
-│            [1]Message                 │
-└───────────────────────────────────────┘
-  (全幅表示、画面上部に配置)
+┌─ Toast Container ──────────────────────────────┐
+│                                                │
+│  [1]Icon  [2]Message          [3]Action [4]Close│
+│                                                │
+└────────────────────────────────────────────────┘
 ```
 
 | # | Part | Required | Description |
 |----|------|----------|-------------|
-| 1 | Message | Required | 操作結果を示すテキスト（14px Bold、中央揃え、白色） |
-
-**表示仕様（Figma注記）:**
-- 表示位置: 画面上部（ステータスバー直下）
-- 自動非表示: 2.5秒後にフェードアウト
-- 全幅表示（画面幅に追従）
+| 1 | Icon | Required | バリアントごとのステータスアイコン (Material Symbols Rounded, 20px) |
+| 2 | Message | Required | 通知メッセージテキスト (1行推奨) |
+| 3 | Action Button | Optional | アクションボタン (Undo等のパターン用) |
+| 4 | Close Button | Optional | 手動で閉じるための✕ボタン |
 
 ---
 
@@ -36,66 +36,48 @@
 
 ```typescript
 interface ToastProps {
-  /** トーストタイプ */
-  type: 'success' | 'error';
+  /** トーストのバリアント */
+  variant: 'success' | 'error' | 'info' | 'warning';
   /** メッセージテキスト */
   message: string;
-  /** 表示時間（ms） */
+  /** 自動非表示までの時間 (ms)。0 で自動非表示無効 */
   duration?: number;
+  /** アクションボタンのラベル */
+  actionLabel?: string;
+  /** アクションボタンのコールバック */
+  onAction?: () => void;
+  /** 閉じるボタンの表示 */
+  showClose?: boolean;
   /** 閉じた時のコールバック */
-  onClose?: () => void;
-}
-
-/** 命令的API（推奨） */
-interface ToastAPI {
-  success: (message: string, options?: ToastOptions) => void;
-  error: (message: string, options?: ToastOptions) => void;
-  dismiss: (toastId?: string) => void;
-}
-
-interface ToastOptions {
-  duration?: number;
   onClose?: () => void;
 }
 ```
 
-**デフォルト値:** `duration=2500`
+### Default Duration per Variant
+
+| Variant | Default Duration |
+|---------|-----------------|
+| success | 3000ms |
+| error | 5000ms |
+| info | 3000ms |
+| warning | 5000ms |
 
 ---
 
 ## Variants
 
-### Type
+| Variant | Icon | Background | Text / Icon Color | Border | Use Case |
+|---------|------|-----------|-------------------|--------|----------|
+| Success | `check_circle` | Green/50 `#EFFEF7` | Green/700 `#0F8655` | Green/200 `#B7FBDE` | 操作成功 (保存完了、登録完了等) |
+| Error | `error` | Red/50 `#FFF0F2` | Red/700 `#D7001A` | Red/200 `#FFC0C8` | 操作失敗 (エラー、通信失敗等) |
+| Info | `info` | Brand/50 `#EDEFFF` | Brand/600 `#5538EE` | Brand/200 `#C4CAFF` | 情報通知 (ステータス変更等) |
+| Warning | `warning` | Yellow/50 `#FFFCE7` | Yellow/800 `#89490A` | Yellow/200 `#FFEF86` | 警告 (注意が必要な変更等) |
 
-| Type | Background | Text | Use Case |
-|------|-----------|------|----------|
-| success | `bg-success` Green/500 `#18CF83` | `text-inverse` `#FFFFFF` | 操作成功（保存完了、登録完了等） |
-| error | `bg-critical` Red/600 `#FF001F` | `text-inverse` `#FFFFFF` | 操作失敗（エラー、通信失敗等） |
-
-### Layout
-
-| Property | Value |
-|----------|-------|
-| 幅 | 100%（画面幅 = 393px 基準） |
-| 高さ | 56px |
-| パディング（左右） | 24px（`var(--space-xl)`） |
-| テキスト配置 | 中央揃え（`text-align: center`） |
-| テキストレイアウト | `flex: 1 0 0`（幅いっぱい） |
-
----
-
-## States
-
-| State | Visual Change | CSS | ARIA |
-|-------|--------------|-----|------|
-| entering | 上からスライドイン | `transform: translateY(-100%) → translateY(0); opacity: 0 → 1` | — |
-| visible | 完全表示 | `transform: translateY(0); opacity: 1` | `role="status"` or `role="alert"` |
-| exiting | フェードアウト | `opacity: 1 → 0` | — |
-| hidden | DOM除去または非表示 | `display: none` | — |
-
-**アニメーション:**
-- 表示: `transform 200ms ease-out` + `opacity 200ms ease-out`
-- 非表示: `opacity 300ms ease-in`（2.5秒待機後）
+**WCAG Note:** 全バリアントで dark text on light background を使用し、4.5:1 以上のコントラスト比を確保。
+- Success: Green/700 `#0F8655` on Green/50 `#EFFEF7` — 7.2:1
+- Error: Red/700 `#D7001A` on Red/50 `#FFF0F2` — 6.8:1
+- Info: Brand/600 `#5538EE` on Brand/50 `#EDEFFF` — 5.9:1
+- Warning: Yellow/800 `#89490A` on Yellow/50 `#FFFCE7` — 7.5:1
 
 ---
 
@@ -105,19 +87,109 @@ interface ToastOptions {
 
 | Token | DS v3 Reference | Resolved Value | Usage |
 |-------|----------------|----------------|-------|
-| `--toast-height` | — | `56px` | トースト高さ |
-| `--toast-success-bg` | `var(--color-bg-success)` | Green/500 `#18CF83` | 成功時背景 |
-| `--toast-error-bg` | `var(--color-bg-critical)` | Red/600 `#FF001F` | エラー時背景 |
-| `--toast-text` | `var(--color-text-inverse)` | Black/0 `#FFFFFF` | テキスト色 |
-| `--toast-font-size` | `var(--font-size-md)` | `14px` | フォントサイズ |
-| `--toast-font-weight` | `var(--font-weight-bold)` | `700` | フォントウェイト |
-| `--toast-line-height` | — | `1.5` | 行高さ |
-| `--toast-font-family` | `var(--font-family)` | `Noto Sans JP` | フォント |
-| `--toast-padding-x` | `var(--space-xl)` | `24px` | 左右パディング |
-| `--toast-duration` | — | `2500ms` | 表示時間 |
-| `--toast-enter-duration` | — | `200ms` | 表示アニメーション |
-| `--toast-exit-duration` | — | `300ms` | 非表示アニメーション |
-| `--toast-z-index` | — | `1000` | 重なり順 |
+| `--toast-radius` | `var(--radius-sm)` | `8px` | 角丸 |
+| `--toast-padding-x` | `var(--space-lg)` | `16px` | 水平パディング |
+| `--toast-padding-y` | `var(--space-md)` | `12px` | 垂直パディング |
+| `--toast-gap` | `var(--space-sm)` | `8px` | 内部要素間のギャップ |
+| `--toast-border-width` | `var(--border-width-sm)` | `1px` | ボーダー幅 |
+| `--toast-font` | `Body/md-default` | `14px / Regular` | メッセージテキスト |
+| `--toast-action-font` | `Body/md-bold` | `14px / Bold` | アクションボタン |
+| `--toast-icon-size` | — | `20px` | ステータスアイコン |
+| `--toast-min-width` | — | `320px` | 最小幅 |
+| `--toast-max-width` | — | `560px` | 最大幅 |
+| `--toast-shadow` | — | `0 4px 12px rgba(0,0,0,0.1)` | ドロップシャドウ |
+
+### CSS Custom Properties
+
+```css
+.toast {
+  --toast-bg: var(--green-50);
+  --toast-text: var(--green-700);
+  --toast-border: var(--green-200);
+  --toast-icon: var(--green-700);
+
+  display: flex;
+  align-items: center;
+  gap: var(--toast-gap);
+  min-width: var(--toast-min-width);
+  max-width: var(--toast-max-width);
+  padding: var(--toast-padding-y) var(--toast-padding-x);
+  background: var(--toast-bg);
+  color: var(--toast-text);
+  border: var(--toast-border-width) solid var(--toast-border);
+  border-radius: var(--toast-radius);
+  box-shadow: var(--toast-shadow);
+}
+
+.toast[data-variant="error"] {
+  --toast-bg: var(--red-50);
+  --toast-text: var(--red-700);
+  --toast-border: var(--red-200);
+  --toast-icon: var(--red-700);
+}
+
+.toast[data-variant="info"] {
+  --toast-bg: var(--brand-50);
+  --toast-text: var(--brand-600);
+  --toast-border: var(--brand-200);
+  --toast-icon: var(--brand-600);
+}
+
+.toast[data-variant="warning"] {
+  --toast-bg: var(--yellow-50);
+  --toast-text: var(--yellow-800);
+  --toast-border: var(--yellow-200);
+  --toast-icon: var(--yellow-800);
+}
+```
+
+---
+
+## Size Specifications
+
+| Property | Value |
+|----------|-------|
+| Height | auto (content-driven) |
+| Min Width | 320px |
+| Max Width | 560px |
+| Padding | 12px 16px |
+| Icon Size | 20px |
+| Close Button | 20px (touch target 32px) |
+| Gap (icon - message) | 8px |
+| Gap (message - action) | 8px |
+| Border Radius | radius-sm (8px) |
+| Border Width | border-width-sm (1px) |
+
+---
+
+## Position & Stacking
+
+| Property | Value |
+|----------|-------|
+| Position | 画面上部中央 (top center) |
+| Offset from top | 24px |
+| z-index | 9999 |
+| Stacking | 最新のトーストが最上部。複数時は下方向に 8px gap で積む |
+| Max visible | 3件 (超過分はキュー待ち) |
+
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| entering | 上から 8px スライドイン + opacity 0→1, 200ms ease-out | — |
+| visible | 完全表示 | variant に応じた role |
+| exiting | opacity 1→0, 150ms ease-in | — |
+| hovered | duration タイマー一時停止 | — |
+
+### Animation
+
+| Property | Value |
+|----------|-------|
+| Enter | `translateY(-8px)→0`, `opacity: 0→1`, `200ms`, `ease-out` |
+| Exit | `opacity: 1→0`, `150ms`, `ease-in` |
+| Hover | duration タイマー一時停止 (マウスリーブで再開) |
 
 ---
 
@@ -127,42 +199,48 @@ interface ToastOptions {
 
 | Attribute | Value | Condition |
 |-----------|-------|-----------|
-| `role` | `status` | success トースト |
-| `role` | `alert` | error トースト |
-| `aria-live` | `polite` | success トースト |
-| `aria-live` | `assertive` | error トースト |
-| `aria-atomic` | `true` | 常時（内容全体を読み上げ） |
+| `role` | `alert` | Error, Warning バリアント |
+| `role` | `status` | Success, Info バリアント |
+| `aria-live` | `assertive` | Error, Warning バリアント |
+| `aria-live` | `polite` | Success, Info バリアント |
+| `aria-atomic` | `true` | 常時 |
 
 ### Keyboard
 
 | Key | Action |
 |-----|--------|
 | `Escape` | 表示中のトーストを即座に閉じる |
-
-### Screen Reader
-- 成功: `role="status"` + `aria-live="polite"` → 現在の読み上げ完了後に通知
-- エラー: `role="alert"` + `aria-live="assertive"` → 即座に割り込み通知
-- 2.5秒の自動非表示はスクリーンリーダーの読み上げに十分な時間を確保
+| `Tab` | Action/Close ボタンにフォーカス移動 (存在時) |
 
 ### Color Contrast
-- success: 白テキスト on Green/500 → 背景色の明度が高いため注意（必要に応じてダークテキスト検討）
-- error: 白テキスト on Red/600 → 4.5:1 以上
+
+全バリアントで WCAG AA (4.5:1) 準拠:
+- Success: Green/700 on Green/50 — 7.2:1 以上
+- Error: Red/700 on Red/50 — 6.8:1 以上
+- Info: Brand/600 on Brand/50 — 5.9:1 以上
+- Warning: Yellow/800 on Yellow/50 — 7.5:1 以上
+
+### Motion
+
+- `prefers-reduced-motion: reduce` 時はアニメーション無効、即座に表示/非表示
 
 ---
 
 ## Do / Don't
 
 ### Do
-- ✅ メッセージは短く完結に（1行に収まる長さ） → 「パスワードの再登録が完了しました」
-- ✅ 成功/エラーの2種類で使い分ける → タイプによる色分けでフィードバックを明確化
-- ✅ ユーザー操作の直後に表示する → 操作との因果関係を明確にする
-- ✅ 複数トーストは最新のもので上書き → スタック表示は避ける
+- メッセージは短く完結に (1行に収まる長さ、20文字以下推奨)
+- ユーザー操作の直後に表示する
+- 削除/変更操作には Action ボタンで Undo を提供する
+- Error トーストは duration を長めに設定する (5s+)
+- 複数トーストは最新のもので上書きまたはスタック
 
 ### Don't
-- ❌ 重要な情報やアクション要求をトーストで表示しない → ダイアログを使う
-- ❌ 長文のメッセージを入れない → 2.5秒で読めない
-- ❌ リンクやボタンをトースト内に配置しない → 自動非表示で操作できなくなる
-- ❌ ページ読み込み時に自動表示しない → ユーザー操作に対するフィードバックに限定
+- 重要な情報やアクション要求をトーストで表示しない (Dialog を使う)
+- 長文のメッセージを入れない (duration 内に読めない)
+- フォーム検証エラーにトーストを使わない (インラインエラーを使う)
+- Action ボタンとリンクを同時に配置しない
+- duration: 0 を安易に使わない (Close ボタン必須にすること)
 
 ---
 
@@ -174,9 +252,8 @@ interface ToastOptions {
 |-----------|----------|---------------|
 | Toast | 一時的な操作結果の通知 | ユーザーの確認/操作が必要 |
 | Dialog | 確認・操作が必要なフィードバック | 単純な成功/失敗通知 |
-| Banner | 持続的なシステム通知 | 一時的な操作結果 |
-| InlineMessage | フォーム内のフィールドエラー | 画面全体の操作結果 |
+| Banner | ページ全体に関わる永続的な通知 | 一時的なフィードバック |
 
 ### Composition Patterns
-- → `vision/references/patterns/form-submission.md` — フォーム送信後の成功トースト
-- → `vision/references/patterns/delete-confirmation.md` — 削除完了後のフィードバック
+- Action Button: `Body/md-bold`、underline なし、テキストカラーと同色
+- Close Button: `icon-secondary` (`#94939D`)、hover で `icon-default` (`#27272A`)

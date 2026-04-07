@@ -6,91 +6,75 @@
 |------|-----|
 | Name | Menu |
 | Description | コンテキストメニュー |
+| Figma Source | Luna DS v3 / Menu |
 | Layer | Molecule |
 | Category | Overlay |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Figma Variants
 
-```
-┌─────────────────────────────┐
-│  [1]Menu Item               │
-│  ─────────────────────────  │
-│  [2]Menu Item               │
-│  ─────────────────────────  │
-│  [3]Menu Item (destructive) │
-└─────────────────────────────┘
-```
-
-| # | Part | Required | Description |
-|----|------|----------|-------------|
-| 1 | Menu Item | Required | 通常のメニュー項目 |
-| 2 | Divider | Optional | メニュー項目間の区切り線 |
-| 3 | Destructive Item | Optional | 破壊的操作のメニュー項目（赤テキスト） |
+| Variant Axis | Values |
+|--------------|--------|
+| Button Type | Normal, Destructive |
+| 01 - 05 | Boolean (各メニュー項目の表示/非表示、最大5項目) |
 
 ---
 
-## Props / API
+## Props
 
-```typescript
-interface MenuProps {
-  /** メニュー項目 */
-  items: MenuItemProps[];
-  /** 表示状態 */
-  isOpen: boolean;
-  /** 閉じるハンドラ */
-  onClose: () => void;
-}
-
-interface MenuItemProps {
-  /** ラベル */
-  label: string;
-  /** 破壊的操作フラグ */
-  isDestructive?: boolean;
-  /** 無効状態 */
-  isDisabled?: boolean;
-  /** クリックハンドラ */
-  onClick: () => void;
-}
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| 01 | Boolean | 1番目のメニュー項目の表示/非表示 |
+| 02 | Boolean | 2番目のメニュー項目の表示/非表示 |
+| 03 | Boolean | 3番目のメニュー項目の表示/非表示 |
+| 04 | Boolean | 4番目のメニュー項目の表示/非表示 |
+| 05 | Boolean | 5番目のメニュー項目の表示/非表示 |
+| Button Type | Enum | Normal / Destructive |
 
 ---
 
-## Variants
+## Token Mapping
 
-| Variant | Text Color | Description |
-|---------|-----------|-------------|
-| default | `text-default` Black/950 | 通常のメニュー項目 |
-| destructive | `text-critical` Red/600 | 削除・ブロック等の破壊的操作 |
+### Menu Container
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Background | bg-default (`#FFFFFF`) | メニュー背景 |
+| Radius | 8px | 角丸 |
+| Padding | 8px all | 内側余白 |
+| Gap | 2px | メニュー項目間の間隔 |
+
+### Menu Item
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Background | bg-default (`#FFFFFF`) | アイテム背景 |
+| Radius | 8px | 角丸 |
+| Padding | 8/12 (top-bottom/left-right) | 内側余白 |
+
+### Button Type: Destructive
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Text Color | text-critical (`#D7001A`) | 破壊的操作テキスト色 |
+
+### Button Type: Normal
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Text Color | text-default (`#27272A`) | 通常テキスト色 |
 
 ---
 
 ## States
 
-| State | Visual Change | CSS | ARIA |
-|-------|--------------|-----|------|
-| default | — | — | — |
-| hover | 背景色変更 | `background: var(--color-bg-interactive)` | — |
-| disabled | テキスト薄く | `color: var(--color-text-disabled); pointer-events: none` | `aria-disabled="true"` |
-
----
-
-## Design Tokens
-
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
-
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--menu-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | メニュー背景 |
-| `--menu-text` | `var(--color-text-default)` | Black/950 `#27272A` | 通常テキスト |
-| `--menu-text-destructive` | `var(--color-text-critical)` | Red/600 `#FF001F` | 破壊的操作テキスト |
-| `--menu-hover-bg` | `var(--color-bg-interactive)` | Black/100 `#EFEEF0` | ホバー背景 |
-| `--menu-divider` | `var(--color-border-default)` | Black/200 `#DADADD` | 区切り線 |
-| `--menu-disabled-text` | `var(--color-text-disabled)` | Black/400 `#94939D` | 無効テキスト |
-| `--menu-radius` | `var(--radius-lg)` | `16px` | 角丸 |
-| `--menu-shadow` | — | `0px 4px 16px rgba(0, 0, 0, 0.12)` | ドロップシャドウ |
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| default | 白背景 | --- |
+| hover | 背景色変更 | --- |
+| disabled | テキスト薄く、操作不可 | `aria-disabled="true"` |
 
 ---
 
@@ -115,9 +99,20 @@ interface MenuItemProps {
 
 ---
 
-## Related
+## Do / Don't
 
-### Similar Components
+### Do
+- メニュー項目は最大5つまで
+- 破壊的操作（削除等）は Destructive タイプを使用
+- 項目の表示/非表示はブール値で制御
+
+### Don't
+- 6個以上のメニュー項目を配置しない
+- 常時表示のナビゲーションに使わない
+
+---
+
+## Related
 
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|

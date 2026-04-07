@@ -6,73 +6,75 @@
 |------|-----|
 | Name | Header |
 | Description | 画面上部のナビゲーションバー |
+| Figma Source | Luna DS v3 / Header |
 | Layer | Organism |
 | Category | Navigation |
 | Status | Stable |
 
 ---
 
-## Anatomy
+## Figma Variants
 
-```
-┌─────────────────────────────────────────────┐
-│  [1]Left     [2]Title          [3]Right     │
-└─────────────────────────────────────────────┘
-```
-
-| # | Part | Required | Description |
-|----|------|----------|-------------|
-| 1 | Left | Optional | 閉じる（×）ボタン、戻るボタン、またはアバター |
-| 2 | Title | Required | 画面タイトルテキスト（中央配置） |
-| 3 | Right | Optional | テキストボタン（「ボタン」等）またはアイコンボタン（×等） |
+| Variant Axis | Values |
+|--------------|--------|
+| Title | Boolean (タイトル表示/非表示) |
+| Button Type (Left) | Icon Button, Text Button, User Button |
+| Button Type (Right) | Icon Button, Text Button, User Button |
+| Right Button count | 0, 1, 2 |
 
 ---
 
-## Props / API
+## Props
 
-```typescript
-interface HeaderProps {
-  /** タイトルテキスト */
-  title: string;
-  /** 左側要素の種類 */
-  leftAction?: 'close' | 'back' | 'avatar';
-  /** アバター画像URL（leftAction="avatar" 時） */
-  avatarSrc?: string;
-  /** 右側要素の種類 */
-  rightAction?: 'text' | 'icon' | 'none';
-  /** 右テキストボタンのラベル */
-  rightLabel?: string;
-  /** 右アイコン */
-  rightIcon?: ReactNode;
-  /** 左アクションハンドラ */
-  onLeftAction?: () => void;
-  /** 右アクションハンドラ */
-  onRightAction?: () => void;
-}
-```
+| Property | Type | Description |
+|----------|------|-------------|
+| Title | Boolean | タイトルの表示/非表示 |
+| Label | Text | タイトルテキスト |
+| Left Button | Instance | 左側ボタン（戻る等、optional） |
+| Right Button 1 | Instance | 右側1番目ボタン（optional） |
+| Right Button 2 | Instance | 右側2番目ボタン（optional） |
+| Button Type | Enum | Icon Button / Text Button / User Button |
 
 ---
 
-## Variants
+## Token Mapping
 
-| Variant | Left | Center | Right | Use Case |
-|---------|------|--------|-------|----------|
-| standard | 閉じる（×）ボタン | タイトルテキスト | テキストボタン | モーダル画面、設定画面 |
-| icon-actions | 戻る（←）ボタン | タイトルテキスト | アイコンボタン（複数可） | 詳細画面、編集画面 |
-| avatar | アバター画像 | タイトルテキスト | アイコンボタン（×） | チャット画面、プロフィール画面 |
+### Container
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Background | bg-default (`#FFFFFF`) | ヘッダー背景 |
+| Padding | 0/8 (top-bottom/left-right) | 内側余白 |
+| Gap | 12px | 要素間の間隔 |
+
+### User Button (Avatar)
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| Radius | 20px | アバター円形（radius で円形表現） |
 
 ---
 
-## Design Tokens
+## Size Specifications
 
-> See: [`design-tokens.md`](../design-tokens.md) for full token definitions
+| Property | Value |
+|----------|-------|
+| Background | White |
+| Padding | 0/8 |
+| Gap | 12px |
+| User Button Radius | 20px |
+| Left | Back button (optional) |
+| Right | Up to 2 buttons |
 
-| Token | DS v3 Reference | Resolved Value | Usage |
-|-------|----------------|----------------|-------|
-| `--header-bg` | `var(--color-bg-default)` | Black/0 `#FFFFFF` | ヘッダー背景 |
-| `--header-title-text` | `var(--color-text-default)` | Black/950 `#27272A` | タイトルテキスト |
-| `--header-action-text` | `var(--color-text-default)` | Black/950 `#27272A` | アクションテキスト |
-| `--header-icon-color` | `var(--color-text-default)` | Black/950 `#27272A` | アイコン色 |
+---
+
+## States
+
+| State | Visual Change | ARIA |
+|-------|--------------|------|
+| default | 白背景、タイトル中央配置 | --- |
+| with back button | 左に戻るボタン表示 | `aria-label="戻る"` |
+| with right actions | 右にアクションボタン表示 | --- |
 
 ---
 
@@ -91,16 +93,26 @@ interface HeaderProps {
 |-----|--------|
 | `Tab` | 要素間のフォーカス移動 |
 | `Enter` / `Space` | ボタンアクション実行 |
-| `Escape` | 閉じる（leftAction="close" 時） |
+| `Escape` | 閉じる（close ボタン時） |
+
+---
+
+## Do / Don't
+
+### Do
+- タイトルは中央配置
+- 戻るボタンは左側に配置
+- 右側ボタンは最大2つまで
+
+### Don't
+- 3つ以上の右側ボタンを配置しない
+- ヘッダー内に複雑なUIを配置しない
 
 ---
 
 ## Related
 
-### Similar Components
-
 | Component | Use When | Don't Use When |
 |-----------|----------|---------------|
 | Header | 画面上部のナビゲーション表示 | 下部固定ナビゲーション |
 | Global Navigation | アプリ全体の下部ナビゲーション | 画面上部のナビゲーション |
-| Dialog | モーダルダイアログのヘッダー | 通常画面のヘッダー |
