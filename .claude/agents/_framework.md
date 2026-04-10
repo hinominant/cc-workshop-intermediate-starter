@@ -11,6 +11,7 @@
 
 | やること | 読むプロトコル | 必須度 |
 |---------|---------------|--------|
+| **チケットを渡された / 「やって」と言われた** | → `/autodev TICKET-ID` を即実行。聞き返さない | **最優先** |
 | **タスク開始** | このファイル（Chain Templates + Complexity Assessment） | 必須 |
 | **UI/フロントエンド実装** | Auto-Trigger Skills (Design) + `DESIGN.md` | 自動 |
 | **テスト実行** | `TEST_POLICY.md` + `SPEC_FIRST.md` | 必須 |
@@ -261,6 +262,45 @@ git-pr-prep → gh pr create → /pr-review
 ```
 テスト, test, push, プッシュ, PR, プルリクエスト, pull request,
 マージ, merge, レビュー, review, コミット, commit, デプロイ, deploy
+```
+
+### Development Flow Auto-Trigger（自然言語ルーティング）
+
+ユーザーがチケットIDや開発指示を自然言語で伝えた場合、自動的に `/autodev` を起動する。
+**コマンド名を聞き返さない。** 自動で判断して実行する。
+
+| ユーザーの入力 | アクション |
+|--------------|-----------|
+| `ARIS-123やって` / `LUNA-456開発して` | → `/autodev TICKET-ID` 即実行 |
+| `このチケットやって` | → `/autodev` を current_ticket で実行 |
+| `バグ直して` + チケットID | → `/autodev TICKET-ID`（light risk） |
+| `〇〇を作って` / `〇〇を実装して`（チケットなし） | → チケット自動作成 → `/autodev` |
+| `〇〇がバグってる` / `〇〇を直して`（チケットなし） | → bugラベルでチケット自動作成 → `/autodev` |
+| Epic規模の説明 | → epicラベルでチケット自動作成 → `/epic` で起動 |
+
+**チケットID検出パターン**: `ARIS-NNN`, `LUNA-NNN`, `NOVA-NNN`, `#NNN`
+
+```
+ユーザー: 「ARIS-500やって」
+     |
+     v
+  チケットID抽出 or 自然言語からラベル推定
+     |
+     v
+  チケットIDあり → Linear/current_ticket.jsonからラベル取得
+  チケットIDなし → /create-ticket でLinear自動作成（タイトル+ラベル推定）
+     |
+     v
+  .context/current_ticket.json 設定
+     |
+     v
+  .context/autonomous-mode 有効化
+     |
+     v
+  /autodev ARIS-500 実行（ラベルに応じてepic/superpowers/light自動判定）
+     |
+     v
+  全Phase自動実行 → commit → push → 完了
 ```
 
 ### Security Auto-Trigger

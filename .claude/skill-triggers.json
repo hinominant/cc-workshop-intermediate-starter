@@ -1,0 +1,71 @@
+{
+  "_description": "スキル自動トリガールール定義。パターンにマッチしたらスキル実行を提案する。",
+  "triggers": [
+    {
+      "name": "debug-on-error",
+      "skill": "debug",
+      "description": "エラー調査時に /debug スキルを自動提案",
+      "condition": {
+        "tool": "Bash",
+        "command_pattern": "(Error|Exception|Traceback|FAIL|failed|error:)",
+        "match_on": "output"
+      },
+      "message": "エラーが検出されました。/debug スキルで構造化デバッグを実行することを推奨します。"
+    },
+    {
+      "name": "superpowers-on-feature",
+      "skill": "superpowers",
+      "directive": true,
+      "description": "Feature開発開始時に /superpowers フローを自動実行指示",
+      "condition": {
+        "tool": "Edit|Write",
+        "file_pattern": "/src/.*\\.(py|ts|js|tsx|jsx)$",
+        "requires_label": "feature",
+        "phase_not": ["spec", "red-tests", "impl", "hardening", "review"]
+      },
+      "message": "Feature開発を開始しました。/superpowers で Spec→TDD→実装→Quality Gate の4フェーズフローを実行することを推奨します。"
+    },
+    {
+      "name": "pr-review-on-push",
+      "skill": "pr-review",
+      "description": "git push前に /pr-review を自動提案",
+      "condition": {
+        "tool": "Bash",
+        "command_pattern": "^git push"
+      },
+      "message": "git push を検知しました。先に /pr-review でコードレビューを実行することを推奨します。"
+    },
+    {
+      "name": "quality-gate-on-commit",
+      "skill": "quality-gate",
+      "description": "git commit時に /quality-gate を自動提案",
+      "condition": {
+        "tool": "Bash",
+        "command_pattern": "^git commit"
+      },
+      "message": "/quality-gate を経由せずにコミットしようとしています。/quality-gate で品質検証→コミット→プッシュを一括実行することを推奨します。"
+    },
+    {
+      "name": "frontend-design-on-ui",
+      "skill": "frontend-design",
+      "description": "フロントエンド作業時に /frontend-design を自動提案",
+      "condition": {
+        "tool": "Edit|Write",
+        "file_pattern": "\\.(tsx|jsx|vue|svelte|css|scss)$"
+      },
+      "message": "フロントエンドファイルを編集中です。/frontend-design でデザインプロトコルを適用することを推奨します。"
+    },
+    {
+      "name": "epic-on-epic-label",
+      "skill": "epic",
+      "directive": true,
+      "description": "Epicラベルのタスクで /epic を自動実行指示",
+      "condition": {
+        "tool": "Edit|Write",
+        "file_pattern": "/src/.*\\.(py|ts|js|tsx|jsx)$",
+        "requires_label": "epic"
+      },
+      "message": "Epicラベルのタスクです。/epic でEpicワークフロー（CEO判断→NOVA設計→分解→Feature実行）を起動することを推奨します。"
+    }
+  ]
+}

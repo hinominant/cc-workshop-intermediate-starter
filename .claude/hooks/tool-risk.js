@@ -27,6 +27,11 @@ const DATA_PROTECTION_REMINDER =
 // Reference: https://qiita.com/sarubot/items/df077776b293163e0a42
 const INVISIBLE_UNICODE_RE = /[\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u034F\u061C\u115F\u1160\u17B4\u17B5\u180E\u2000-\u200A\u202A-\u202E\u2066-\u206F\u2800\u3164\uFFA0]/;
 
+// === Config Protection: Linter/Formatter設定ファイル改ざん防止 ===
+// AIエージェントはコードを修正する代わりにlinter/formatter設定を緩くしてテストを通す傾向がある。
+// Reference: everything-claude-code config-protection pattern
+const CONFIG_PROTECTION_RE = /(?:^|[/\\])(?:\.eslintrc(?:\.(?:js|cjs|mjs|json|yml|yaml))?|eslint\.config\.(?:js|cjs|mjs|ts)|\.prettierrc(?:\.(?:js|cjs|mjs|json|yml|yaml|toml))?|prettier\.config\.(?:js|cjs|mjs|ts)|biome\.(?:json|jsonc)|\.stylelintrc(?:\.(?:js|cjs|mjs|json|yml|yaml))?|tsconfig(?:\.[\w-]+)?\.json|\.swcrc|\.babelrc(?:\.json)?|babel\.config\.(?:js|cjs|mjs|json)|jest\.config\.(?:js|ts|cjs|mjs)|vitest\.config\.(?:js|ts|cjs|mjs)|\.editorconfig)$/;
+
 // === Safety Gate Patterns (auto-block) ===
 
 const SAFETY_GATE_PATTERNS = [
@@ -353,7 +358,7 @@ function classifyRisk(toolName, toolInput) {
     return { level: 'LOW', reason: '' };
   }
 
-  // Write/Edit tools - GlassWorm check + MEDIUM + file ownership context injection
+  // Write/Edit tools - GlassWorm check + Config Protection + MEDIUM + file ownership context injection
   if (['Write', 'Edit', 'NotebookEdit'].includes(toolName)) {
     // SEC-014: Write/Edit 内容の不可視Unicode文字チェック
     const contentToCheck = (toolInput.content || '') + (toolInput.new_string || '');
@@ -362,6 +367,19 @@ function classifyRisk(toolName, toolInput) {
     }
 
     const filePath = toolInput.file_path || toolInput.notebook_path || '';
+
+    // CONFIG-PROTECT: Linter/Formatter設定ファイルの改ざん防止
+    // コードを直すのではなく設定を緩くする行為を検出し、人間に確認を求める。
+    if (filePath) {
+      const basename = filePath.split(/[/\\]/).pop() || '';
+      if (CONFIG_PROTECTION_RE.test(basename)) {
+        return {
+          level: 'HIGH',
+          reason: '⚠️ Linter/Formatter設定変更: ' + basename + ' — コードを修正する代わりに設定を緩くしていませんか？本当に設定変更が必要か確認してください',
+        };
+      }
+    }
+
     return {
       level: 'MEDIUM',
       reason: 'ファイル変更: ' + filePath,
