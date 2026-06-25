@@ -60,6 +60,29 @@ if (filePath.endsWith('.env') || filePath.endsWith('.env.example')) {
   process.exit(0);
 }
 
+// ARIS-834 (MAGIKA-002): 拡張子偽装検知
+// Edit/Writeで操作対象のファイルが、拡張子は無害だが実体が機密ファイルの場合をblock
+if ((tool === 'Edit' || tool === 'Write') && filePath) {
+  try {
+    const { detectFileType, isSecretLike, expectedLabelFromExtension } = require('./_magika-helper');
+    if (fs.existsSync(filePath)) {
+      const detected = detectFileType(filePath);
+      const expected = expectedLabelFromExtension(filePath);
+      if (isSecretLike(detected.label) && !isSecretLike(expected) && detected.score > 0.7) {
+        console.log(JSON.stringify({
+          decision: 'block',
+          reason: `🔐 Secret Scan Guard: 拡張子偽装の疑い（MAGIKA-002）\n`
+            + `ファイル: ${filePath}\n`
+            + `拡張子から期待: ${expected}\n`
+            + `実体判定: ${detected.label} (score: ${detected.score}, source: ${detected.source})\n\n`
+            + `機密ファイルが無害な拡張子で偽装されている可能性があります。`,
+        }));
+        process.exit(0);
+      }
+    }
+  } catch {}
+}
+
 // source .env や grep .env はローカル操作なので許可
 if (tool === 'Bash' && /^(source|set -a|export|grep|cat .*\.env)/.test(textToScan.trim())) {
   console.log(JSON.stringify({ decision: 'approve' }));

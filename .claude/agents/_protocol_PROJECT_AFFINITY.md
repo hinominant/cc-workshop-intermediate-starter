@@ -155,6 +155,20 @@ These agents provide value regardless of project type. Nexus should always consi
 | Triage | H | H | M | — | — | H | — | — | — |
 | Arena | H | M | — | M | M | H | — | — | — |
 
+### AI Video Generation Agents (Image-to-Video Workflow)
+
+| Agent | Marketing | Community | Event | Brand | Content |
+|-------|-----------|-----------|-------|-------|---------|
+| PromptArchitect | H | H | H | H | H |
+| ImageForge | H | H | H | H | H |
+| MotionForge | H | H | H | H | H |
+| AudioForge | H | M | H | H | H |
+| StyleGuard | H | H | H | H | M |
+| QualityCurator | H | H | H | H | H |
+| CostMonitor | H | H | H | H | H |
+
+AI動画制作 (静止画→i2v動画→音→品質判定→コスト追跡) のパイプライン7体。Midjourney v7 / Flux Pro / Runway Gen-4 / Veo 3 / Kling 2.6 / Sora 2 / Suno v5 / ElevenLabs 等を統合運用。Director (デモ動画用 Playwright E2E) とは別系統で、実写素材+AI生成のハイブリッド or 完全AI生成動画を対象とする。
+
 ---
 
 ## Usage by Nexus

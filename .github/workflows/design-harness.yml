@@ -1,0 +1,105 @@
+name: Design Harness
+
+# Design Harness 物理ブロック (汎用版 — hino-orchestrator 配布)
+#
+# 目的:
+#   - DESIGN_HARNESS.md に違反する PR を merge できないようにする (Vitest = Layer 3 段階 1)
+#   - スライドの視覚回帰を PR 上で検出する (Playwright = Layer 3 段階 2)
+#
+# トリガ:
+#   - lib/courses/** / components/slides/** / DESIGN_HARNESS.md
+#     tests/unit/design-harness/** / e2e/design-harness/** が変更された PR のみ
+#   - 全 PR では走らせない (CI 時間節約)
+#
+# プロジェクト固有調整 (TBD):
+#   - paths のディレクトリ名 (lib/courses 等) はプロジェクト構造に合わせて変更
+#   - E2E_BASE_URL を本番デプロイ URL に変更
+#   - node-version は package.json の engines に合わせる
+#
+# Spec:
+#   - _templates/DESIGN_HARNESS.md §10
+#   - _common/DESIGN_HARNESS_METHODOLOGY.md §2.3
+#
+# 関連 skill (hino-orchestrator):
+#   - .claude/skills/design-harness-vitest.md
+#   - .claude/skills/design-harness-playwright.md
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      # TBD: プロジェクト固有 (slides を持つディレクトリに合わせる)
+      - "lib/courses/**"
+      - "components/slides/**"
+      - "DESIGN_HARNESS.md"
+      - "DESIGN.md" # 互換性のため
+      - "tests/unit/design-harness/**"
+      - "e2e/design-harness/**"
+      - ".github/workflows/design-harness.yml"
+  workflow_dispatch:
+
+jobs:
+  vitest-design-harness:
+    name: Vitest (slide-rules)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22" # TBD: プロジェクト engines に合わせる
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Vitest (design-harness suite)
+        run: npx vitest run tests/unit/design-harness --reporter=default
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+      # 失敗で PR ブロック (continue-on-error: false がデフォルト)
+
+  playwright-snapshot:
+    name: Playwright (slide-snapshots)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: vitest-design-harness
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Playwright browsers (chromium + webkit)
+        run: npx playwright install --with-deps chromium webkit
+      - name: Run Playwright (design-harness, chromium only)
+        # 本番 URL に対して直接スナップショット取得 (webServer 設定なし運用)
+        # 初回はスナップショットが存在しない (gitignore 済) ため
+        # --update-snapshots でベースライン生成 → 次回以降 strict 比較
+        run: |
+          if [ -d "e2e/design-harness/slide-snapshots.spec.ts-snapshots" ]; then
+            npx playwright test e2e/design-harness/slide-snapshots.spec.ts \
+              --project=chromium \
+              --reporter=github
+          else
+            echo "::warning::No baseline snapshots found. Generating baseline (this run will pass)."
+            npx playwright test e2e/design-harness/slide-snapshots.spec.ts \
+              --project=chromium \
+              --update-snapshots \
+              --reporter=github
+          fi
+        env:
+          # TBD: プロジェクトの本番デプロイ URL に変更
+          E2E_BASE_URL: "https://your-production-url.example.com"
+          NEXT_TELEMETRY_DISABLED: "1"
+      - name: Upload snapshot diff artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-harness-playwright-report
+          path: |
+            playwright-report/
+            test-results/
+            e2e/design-harness/slide-snapshots.spec.ts-snapshots/
+          retention-days: 14
+          if-no-files-found: ignore

@@ -186,6 +186,20 @@ function main() {
 
   // デバッグモード: 検索+レビューなしの修正をブロック
   if (isDebugMode()) {
+    // Fail-open: tool-log.jsonl が無い or 過去30分のエントリが 0 件の場合
+    // = logger 側が止まっている可能性が高いため、仕組みがデッドロックしないよう通す。
+    // CLAUDE.md「仕組みがデッドロックしたら人間の承認で突破可能にする」原則適用。
+    // ARIS-895: post-tool-use が matcher=Bash|Edit|Write のため WebSearch/WebFetch が
+    // そもそもログされない構造的バグがあった。その再発事象でも deadlock しない。
+    if (recentEntries.length === 0) {
+      process.stderr.write(
+        '⚠ DEBUG GUARD: tool-log.jsonl に直近30分のエントリがありません。' +
+        'logger が止まっている可能性があります。fail-open で通過します。' +
+        '\n'
+      );
+      console.log(JSON.stringify({ decision: 'approve' }));
+      return;
+    }
     if (!hasRecentResearch(recentEntries)) {
       console.log(JSON.stringify({
         decision: 'block',

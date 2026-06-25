@@ -4,6 +4,10 @@
 # テスト通過を強制する。プロンプトのルールでは守れないため、
 # 仕組みで強制する（OPS-023: 5回再発の根本対策）。
 #
+# NOTE: ARIS では .git/hooks/pre-commit が SSoT（全チェック集約）。
+# ARIS の commit-gate.sh は pass-through (exit 0 のみ)。
+# 他リポジトリではこのテンプレートがそのまま使われる。
+#
 # Install: .claude/hooks/commit-gate.sh
 # Settings: settings.json の hooks.PreToolUse に登録
 

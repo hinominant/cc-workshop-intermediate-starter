@@ -66,6 +66,26 @@
         "requires_label": "epic"
       },
       "message": "Epicラベルのタスクです。/epic でEpicワークフロー（CEO判断→NOVA設計→分解→Feature実行）を起動することを推奨します。"
+    },
+    {
+      "name": "design-harness-vitest-on-slides-edit",
+      "skill": "design-harness-vitest",
+      "description": "Slide ファイル編集時に Vitest 検証ルール更新を自動提案 (Design Harness Initiative)",
+      "condition": {
+        "tool": "Edit|Write",
+        "file_pattern": "(lib/courses/content/.+/slides\\.ts|components/slides/.+\\.tsx)$"
+      },
+      "message": "Slide ファイルを編集しました。/design-harness-vitest で Vitest 検証ルール (kind 多様性 / NG パターン / 数字スライド検出 等) の更新を推奨します。DESIGN_HARNESS.md ルール違反を物理ブロックする仕組みです。"
+    },
+    {
+      "name": "design-harness-playwright-on-snapshot-edit",
+      "skill": "design-harness-playwright",
+      "description": "Slide / E2E ファイル編集時に Playwright snapshot 更新を自動提案 (Design Harness Initiative)",
+      "condition": {
+        "tool": "Edit|Write",
+        "file_pattern": "(e2e/design-harness/.+\\.spec\\.ts|lib/courses/content/.+/slides\\.ts)$"
+      },
+      "message": "Slide / E2E ファイルを編集しました。/design-harness-playwright で snapshot baseline の更新 + 視覚密度比較を推奨します。スマホ 390px 横スクロール / stat フォント ≥48px 等の自動検証が走ります。"
     }
   ]
 }
