@@ -231,6 +231,29 @@ Skip (— for CLI):
 
 ---
 
+## Music / Creative Media Team
+
+`Music` / `Personal` の文脈でのみ起用する楽曲制作チーム（AI生成・インスト中心）。
+一般のソフト開発（SaaS/API/Data 等）では起用しない（`PROJECT_AFFINITY` で `—`）。
+
+| Agent | Role | Affinity |
+|-------|------|----------|
+| Maestro | 指揮/企画/完成判定 | Music(H) Personal(H) |
+| Cadence | 参照/A&Rリサーチ | Music(H) Personal(H) |
+| Coda | 構成/アレンジ | Music(H) Personal(H) |
+| Riff | 生成プロンプト設計 | Music(H) Personal(H) |
+| **AudioForge** | 生成実行（動画チームと共有） | AIGeneration(H) Music(H) Personal(M) |
+| Timbre | 音質/ミックス評価 | Music(H) Personal(H) |
+| Encore | テイク選定/QA | Music(H) Personal(H) |
+| Vault | メタデータ/アーカイブ | Music(H) Personal(H) |
+
+チェーン: `Maestro → Cadence → (Coda ∥ Riff) → AudioForge → Timbre → Encore → Vault`
+（NG時 Timbre/Encore → Riff/Coda へ差し戻し）
+
+> AudioForge は動画生成チームと音楽チームの**両方に所属**（文脈で役割が切替）。
+
+---
+
 ## In-File Format
 
 Each agent's SKILL.md includes a compact `PROJECT_AFFINITY` tag in its CAPABILITIES_SUMMARY HTML comment:

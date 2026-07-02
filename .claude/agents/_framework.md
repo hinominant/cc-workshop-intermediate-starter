@@ -108,6 +108,7 @@ Complexity Assessment と連動し、計画モードの使用を制御する。
 | ビジネス/戦略 | CEO → Sherpa → Forge/Builder → Radar |
 | データ分析 | Analyst → CEO（意思決定要時）→ Nexus（施策化） |
 | データパイプライン修正 | Scout → Analyst → Builder → Radar |
+| **音楽制作(AI生成・インスト)** | **Maestro → Cadence → (Coda ∥ Riff) → AudioForge → Timbre → Encore → Vault**（NG時 Timbre/Encore → Riff/Coda へ差し戻し） |
 | スペック準拠監査 | Auditor → Builder → Radar |
 | 大規模修正（監査付き） | Sherpa → Builder → Auditor → Radar |
 | **重大判断（Sycophancy対策）** | **Scout/Builder → Magi(3視点) → Auditor(審判)** |
