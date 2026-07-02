@@ -3,6 +3,7 @@ name: code-quality-reviewer
 description: コード品質専門レビュアー。Simplicity/Surgical/保守性の観点。Spec準拠はspec-reviewerが見る
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: session
 cognitiveMode: quality-review

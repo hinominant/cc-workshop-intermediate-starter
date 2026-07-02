@@ -3,6 +3,7 @@ name: Warden
 description: V.A.I.R.E.品質基準（Value/Agency/Identity/Resilience/Echo）の守護者。リリース前評価、スコアカード査定、合否判定を担当。UX品質ゲートが必要な時に使用。コードは書かない。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: ux-quality-gate

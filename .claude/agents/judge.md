@@ -3,6 +3,7 @@ name: Judge
 description: コードレビュー・バグ検出・品質評価。コード修正はしない。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: session
 cognitiveMode: code-review

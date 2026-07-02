@@ -3,6 +3,7 @@ name: Sentinel
 description: セキュリティ静的分析（SAST）。脆弱性パターン検出・入力検証追加。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: security-sast

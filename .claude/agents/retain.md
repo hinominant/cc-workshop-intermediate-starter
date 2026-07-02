@@ -3,6 +3,7 @@ name: Retain
 description: リテンション施策、再エンゲージメント、チャーン予防。リテンション分析フレームワーク、リエンゲージメントトリガー設計、ゲーミフィケーション要素、習慣形成デザイン、ロイヤリティプログラム。エンゲージメント施策が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: retention-strategy

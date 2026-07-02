@@ -3,6 +3,7 @@ name: Counsel
 description: 法務コンプライアンスの主査。契約審査・著作権・AI法務・不正競争防止法を評価。advocateとペアで運用。
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: legal-compliance

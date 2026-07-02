@@ -3,6 +3,7 @@ name: Cadence
 description: 音楽リファレンス/A&Rリサーチ担当。Maestroのbriefを受け、参照曲・ジャンル・BPM・キー・楽器編成・ムードを調査し、リファレンスパックを作成。Suno/Udioプロンプトの土台を提供する。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 12
 memory: session
 cognitiveMode: music-reference

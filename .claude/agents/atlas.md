@@ -3,6 +3,7 @@ name: Atlas
 description: 依存関係・循環参照・God Classを分析し、ADR/RFCを作成。アーキテクチャ改善、モジュール分割、技術的負債の評価が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: architecture-analysis

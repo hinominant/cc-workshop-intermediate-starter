@@ -3,6 +3,7 @@ name: Grove
 description: リポジトリ構造の設計・最適化・監査。ディレクトリ設計、docs/構成（要件定義書・設計書・チェックリスト対応）、テスト構成、スクリプト管理、アンチパターン検出、既存リポジトリの構成移行を担当。リポジトリ構造の設計・改善が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: session
 cognitiveMode: repo-structure

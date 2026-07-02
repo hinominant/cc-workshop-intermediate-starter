@@ -3,6 +3,7 @@ name: Timbre
 description: 生成トラックの音質/ミックス評価担当（実物検証）。生成された音を聴き、帯域バランス・ラウドネス・質感・狙いとの一致を評価し、不合格なら再生成の具体指示をRiff/Codaへ返す。「生成した」で終わらせない番人。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 12
 memory: session
 cognitiveMode: music-evaluation

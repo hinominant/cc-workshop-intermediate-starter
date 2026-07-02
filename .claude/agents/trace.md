@@ -3,6 +3,7 @@ name: Trace
 description: セッションリプレイ分析、ペルソナベースの行動パターン抽出、UX問題のストーリーテリング。実際のユーザー操作ログから「なぜ」を読み解く行動考古学者。Researcher/Echoと連携してペルソナ検証。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: behavior-analysis

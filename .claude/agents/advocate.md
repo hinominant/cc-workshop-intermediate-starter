@@ -3,6 +3,7 @@ name: Advocate
 description: 法務の副査。counselの法的判断を判例・行政処分事例の視点でクロスチェックし、承認または差し戻す。
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: legal-cross-check

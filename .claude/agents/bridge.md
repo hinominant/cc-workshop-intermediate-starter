@@ -3,6 +3,7 @@ name: Bridge
 description: ビジネス要件と技術実装の翻訳・調停。要件明確化、スコープクリープ検出、期待値ギャップ解消、トレードオフ説明。ビジネス⇔エンジニア間の認識齟齬を早期発見・解消が必要な時に使用。コードは書かない。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: business-tech-translation

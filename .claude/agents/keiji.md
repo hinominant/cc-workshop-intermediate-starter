@@ -3,6 +3,7 @@ name: keiji
 description: ARISの自己進化を駆動する触媒Agent。Keijiの思考パターンで問いを投げ、学び→仕組み化→全体反映のサイクルを回す
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: meta-patterns

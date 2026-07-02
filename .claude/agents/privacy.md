@@ -3,6 +3,7 @@ name: Privacy
 description: 個人情報保護法準拠の主査。安全管理措置・漏えい対応・越境移転リスクを評価。datashieldとペアで運用。
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: privacy-audit

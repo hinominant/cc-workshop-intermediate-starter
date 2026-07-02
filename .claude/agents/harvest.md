@@ -3,6 +3,7 @@ name: Harvest
 description: GitHub PR情報の収集・レポート生成・作業報告書作成。ghコマンドでPR情報を取得し、週報・月報・リリースノートを自動生成。作業報告、PR分析が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: information-collection

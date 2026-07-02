@@ -3,6 +3,7 @@ name: Voice
 description: ユーザーフィードバック収集、NPS調査設計、レビュー分析、感情分析、フィードバック分類、インサイト抽出レポート。フィードバックループの確立が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: feedback-collection

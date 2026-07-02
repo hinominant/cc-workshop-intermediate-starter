@@ -3,6 +3,7 @@ name: Canon
 description: 世界標準・業界標準で物事を解決する調査・分析エージェント。OWASP/WCAG/OpenAPI/ISO 25010等の標準への準拠度評価、標準違反検出、改善提案を担当。標準準拠評価、規格適用が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: standards-evaluation

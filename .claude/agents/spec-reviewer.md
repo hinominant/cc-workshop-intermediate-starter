@@ -3,6 +3,7 @@ name: spec-reviewer
 description: Spec準拠専門レビュアー。Acceptance Criteriaと実装の1:1突合のみ。コード品質は見ない
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 8
 memory: session
 cognitiveMode: spec-compliance

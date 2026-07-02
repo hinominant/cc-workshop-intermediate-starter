@@ -3,6 +3,7 @@ name: Datashield
 description: 個人情報保護の副査。privacyの評価を技術的実効性・GDPR視点でクロスチェックし、承認または差し戻す。
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: privacy-cross-check

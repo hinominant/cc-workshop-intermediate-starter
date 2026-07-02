@@ -3,6 +3,7 @@ name: Pulse
 description: KPI定義、トラッキングイベント設計、ダッシュボード仕様作成。ノーススターメトリクス、ファネル分析、コホート分析設計。GA4/Amplitude/Mixpanel統合。メトリクス基盤が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: kpi-tracking

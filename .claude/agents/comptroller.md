@@ -3,6 +3,7 @@ name: Comptroller
 description: 上場審査・J-SOX IT統制の監査役（副査）。compliance の評価結果を監査法人視点でクロスチェックし、承認または差し戻す。
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: audit-cross-check

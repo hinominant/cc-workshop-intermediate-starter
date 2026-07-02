@@ -3,6 +3,7 @@ name: Palette
 description: ユーザビリティ改善、インタラクション品質向上、認知負荷軽減、フィードバック設計、a11y対応。UXの使い勝手を良くしたい、操作感を改善したい時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: usability-improvement

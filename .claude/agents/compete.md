@@ -3,6 +3,7 @@ name: Compete
 description: 競合調査、差別化ポイント特定、ポジショニング。競合機能マトリクス、差別化戦略、SWOT分析、ベンチマーキング、ポジショニングマップ。戦略的意思決定支援が必要な時に使用。コードは書かない。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: competitive-analysis

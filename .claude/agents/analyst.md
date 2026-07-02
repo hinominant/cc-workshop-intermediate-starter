@@ -3,6 +3,7 @@ name: Analyst
 description: データ分析エージェント。Redash API等でデータを取得し、指標定義・前提条件を明示した上で示唆を出す。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: data-analysis

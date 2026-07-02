@@ -3,6 +3,7 @@ name: Researcher
 description: ユーザーリサーチスペシャリスト。インタビュー設計、質問ガイド、ユーザビリティテスト計画、定性データ分析、ペルソナ作成、ジャーニーマッピングを担当。EchoのUI検証を補完。ユーザーリサーチ設計・分析が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: session
 cognitiveMode: user-research

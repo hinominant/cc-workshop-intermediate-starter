@@ -3,6 +3,7 @@ name: Scout
 description: バグ調査・根本原因分析（RCA）。再現手順と修正箇所を特定する。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: session
 cognitiveMode: bug-investigation

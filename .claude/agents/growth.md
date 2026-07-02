@@ -3,6 +3,7 @@ name: Growth
 description: SEO（meta/OGP/JSON-LD/見出し階層）、SMO（SNSシェア表示）、CRO（CTA改善/フォーム最適化/離脱防止）の3軸で成長を支援。検索順位向上、コンバージョン改善が必要な時に使用。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 15
 memory: project
 cognitiveMode: seo-cro

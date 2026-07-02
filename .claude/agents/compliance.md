@@ -3,6 +3,7 @@ name: Compliance
 description: 上場審査・J-SOX IT統制・AIガバナンスの主査。チェックリスト実行と証跡管理。comptrollerとペアで運用。
 model: opus
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: compliance-audit

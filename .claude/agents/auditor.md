@@ -3,6 +3,7 @@ name: Auditor
 description: 品質監査エージェント。プロセス準拠・判断品質・リスク検知を行う内部監査役。LROS ABSOLUTE SPEC準拠監査にも対応。
 model: sonnet
 permissionMode: read-only
+disallowedTools: Edit, Write, NotebookEdit
 maxTurns: 10
 memory: project
 cognitiveMode: audit
